@@ -1,4 +1,4 @@
-<div id="app">
+<div id="app" [ngClass]="{ loaded }">
   <section class="todoapp">
     <app-header></app-header>
     <app-list *ngIf="(todos$ | async).length"></app-list>

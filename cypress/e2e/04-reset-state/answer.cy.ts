@@ -61,7 +61,9 @@ describe('ANTI-PATTERN: reset state through the UI', () => {
 describe('reset data using XHR call', () => {
   // you can use separate "beforeEach" hooks or a single one
   beforeEach(() => {
-    cy.request('POST', '/reset', {
+    const api = Cypress.env('api');
+    expect(api, 'api url').to.be.a('string');
+    cy.request('POST', api + '/reset', {
       todos: []
     });
   });
@@ -145,7 +147,7 @@ describe('create todos using API', () => {
   const api = Cypress.env('api');
   expect(api, 'api url').to.be.a('string');
 
-  it.only('resets the DB to one item', () => {
+  it('resets the DB to one item', () => {
     const todo = {
       id: String(Cypress._.random(1e6)),
       title: `Write test ${Cypress._.random(1e4)}`,
@@ -157,7 +159,7 @@ describe('create todos using API', () => {
 
   it('creates a random number of items', () => {
     // reset the data on the server
-    cy.request('POST', '/reset', { todos: [] });
+    cy.request('POST', api + '/reset', { todos: [] });
     // pick a random number of todos to create between 1 and 10
     const numTodos = Math.floor(Math.random() * 10) + 1;
     cy.log(`Creating **${numTodos}** todos`);
@@ -171,7 +173,7 @@ describe('create todos using API', () => {
     console.table(todos);
     // call cy.request to post each TODO item
     todos.forEach(todo => {
-      cy.request('POST', '/todos', todo);
+      cy.request('POST', api + '/todos', todo);
     });
     // visit the page and check the displayed number of todos
     cy.visit('/');
@@ -180,13 +182,13 @@ describe('create todos using API', () => {
 
   it('creates a random number of items (Lodash)', () => {
     // reset the data on the server
-    cy.request('POST', '/reset', { todos: [] });
+    cy.request('POST', api + '/reset', { todos: [] });
     // create a random number of todos using cy.request
     // tip: use can use Lodash methods to draw a random number
     const numTodos = Cypress._.random(1, 10);
     // look at the POST /todos calls the application sends
     Cypress._.times(numTodos, k => {
-      cy.request('POST', '/todos', {
+      cy.request('POST', api + '/todos', {
         title: `todo ${k}`,
         completed: false,
         id: `id-${k}`
@@ -221,15 +223,17 @@ describe('create todos using API', () => {
 });
 
 describe('conditional reset data using XHR call', () => {
+  const api = Cypress.env('api');
+  expect(api, 'api url').to.be.a('string');
   function validate() {
     return cy
-      .request('/todos')
+      .request(api + '/todos')
       .its('body.length')
       .then(n => n === 0);
   }
 
   function reset() {
-    cy.request('POST', '/reset', {
+    cy.request('POST', api + '/reset', {
       todos: []
     });
   }
@@ -265,22 +269,25 @@ describe('conditional reset data using XHR call', () => {
 
   it('starts with zero items', () => {
     cy.visit('/');
-    cy.get('body').should('have.class', 'loaded');
+    cy.get('#app').should('have.class', 'loaded');
     cy.get('li.todo').should('have.length', 0);
   });
 
   it('starts with zero items', () => {
     cy.visit('/');
-    cy.get('body').should('have.class', 'loaded');
+    cy.get('#app').should('have.class', 'loaded');
     cy.get('li.todo').should('have.length', 0);
   });
 });
 
-describe('routing', () => {
+describe.skip('routing', () => {
+  const api = Cypress.env('api');
+  expect(api, 'api url').to.be.a('string');
+
   beforeEach(() => {
     // reset the app to have a few todos
     cy.fixture('three-items').then(todos => {
-      cy.request('POST', '/reset', { todos });
+      cy.request('POST', api + '/reset', { todos });
     });
   });
 

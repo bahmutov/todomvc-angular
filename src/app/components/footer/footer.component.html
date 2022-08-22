@@ -5,7 +5,12 @@
   >
   <ul class="filters">
     <li *ngFor="let item of filterTitles">
-      <a href="#" [class.selected]="item.key === (filter$ | async)" (click)="handleFilterSelect(item.key)">
+      <a
+        href="#"
+        [class.selected]="item.key === (filter$ | async)"
+        (click)="handleFilterSelect(item.key)"
+        [attr.data-cy]="'filter-' + item.value.toLowerCase()"
+      >
         {{ item.value }}
       </a>
     </li>

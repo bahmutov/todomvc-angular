@@ -14,12 +14,15 @@ import { onLoad } from '../../store/actions/todo.action';
 export class AppComponent implements OnInit {
   todos$: Observable<TodoInterface[]>;
 
+  loaded: boolean;
+
   constructor(private store: Store<TodoStateInterface>) {
     this.todos$ = this.store.select('todos');
   }
 
   ngOnInit() {
     TodoRestService.loadTodos().then(todos => {
+      this.loaded = true;
       this.store.dispatch(onLoad(todos));
     });
 
