@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
-const isLocalHost = () => Cypress.config('baseUrl').includes('localhost');
+const isLocalHost = () => Cypress.config('baseUrl')?.includes('localhost');
 
 if (isLocalHost()) {
   // we can reset data only when running locally
   beforeEach(function resetData() {
-    cy.request('POST', '/reset', {
+    cy.request('POST', `${Cypress.env('api')}/reset`, {
       todos: []
     });
   });
