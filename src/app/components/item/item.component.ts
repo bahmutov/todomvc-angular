@@ -40,6 +40,8 @@ export class ItemComponent implements OnChanges {
   }
 
   handleCompleted() {
+    console.log('completed');
+    console.log(this.update, this.update.emit);
     this.update.emit({ id: this.todo.id, completed: !this.todo.completed });
   }
 }

@@ -46,3 +46,33 @@ it('shows an item', () => {
   );
   cy.contains('li.todo', 'Write code here').find('.toggle').should('not.be.checked');
 });
+
+it('completes the item with style', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo" (update)="update.emit($event)"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo,
+        update: {
+          emit: cy.spy().as('updateSpy')
+        }
+      }
+    }
+  );
+  cy.contains('li.todo', 'Write code here').find('.toggle').should('not.be.checked');
+  cy.get('.toggle').check();
+  cy.get('@updateSpy').should('have.been.calledOnce').its('firstCall.args.0', { timeout: 0 }).should('deep.equal', {
+    id: '101',
+    completed: true
+  });
+});
