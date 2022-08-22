@@ -31,3 +31,5 @@ it('can delete an item', () => {
   // confirm the other item still exists
   cy.contains('li.todo', 'hard').should('exist');
 });
+
+export {};
