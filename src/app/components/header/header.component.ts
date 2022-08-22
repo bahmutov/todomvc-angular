@@ -10,12 +10,12 @@ const ENTER_KEY = 'Enter';
   templateUrl: './header.component.html'
 })
 export class HeaderComponent {
-  name = '';
+  title = '';
 
   constructor(private store: Store<TodoStateInterface>) {}
 
   handleChange(event: KeyboardEvent) {
-    this.name = (event.target as HTMLInputElement).value;
+    this.title = (event.target as HTMLInputElement).value;
   }
 
   handleSubmit(event: KeyboardEvent) {
@@ -23,7 +23,7 @@ export class HeaderComponent {
       return;
     }
 
-    this.store.dispatch(onCreate(this.name));
-    this.name = '';
+    this.store.dispatch(onCreate(this.title));
+    this.title = '';
   }
 }

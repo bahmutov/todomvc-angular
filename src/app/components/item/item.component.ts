@@ -8,7 +8,7 @@ import { TodoInterface } from '../../services/todo.interface';
 export class ItemComponent implements OnChanges {
   editing = false;
 
-  name = '';
+  title = '';
 
   @Input()
   public todo: TodoInterface;
@@ -21,7 +21,8 @@ export class ItemComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.todo) {
-      this.name = changes.todo.currentValue.name;
+      console.log(changes.todo.currentValue);
+      this.title = changes.todo.currentValue.title;
     }
   }
 
@@ -30,7 +31,7 @@ export class ItemComponent implements OnChanges {
   }
 
   handleBlur() {
-    this.update.emit({ id: this.todo.id, name: this.name });
+    this.update.emit({ id: this.todo.id, title: this.title });
     this.editing = false;
   }
 

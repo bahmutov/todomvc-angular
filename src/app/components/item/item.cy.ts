@@ -3,7 +3,7 @@ import { ItemComponent } from './item.component';
 it('shows an item', () => {
   const todo = {
     id: '101',
-    name: 'Write code',
+    title: 'Write code',
     completed: false
   };
   cy.mount(ItemComponent, {

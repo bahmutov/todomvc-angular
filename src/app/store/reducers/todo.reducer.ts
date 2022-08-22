@@ -12,8 +12,8 @@ export const createTodoReducer = (initialState: TodoInterface[] = []) =>
     on(onLoad, (state: TodoInterface[], { todos }) => {
       return todos;
     }),
-    on(onCreate, (state: TodoInterface[], { name }) => {
-      return [...state, { id: uuidv4(), name, completed: false }];
+    on(onCreate, (state: TodoInterface[], { title }) => {
+      return [...state, { id: uuidv4(), title, completed: false }];
     }),
     on(onUpdate, (state: TodoInterface[], { values }) => {
       return state.map(todo => (todo.id === values.id ? { ...todo, ...values } : todo));

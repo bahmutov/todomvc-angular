@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TodoLocalService } from '../../services/todo-local.service';
+import { TodoRestService } from '../../services/todo-rest.service';
 import { Observable } from 'rxjs';
 import { TodoInterface } from '../../services/todo.interface';
 import { TodoStateInterface } from '../../store/todo-state.interface';
@@ -18,7 +19,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
+    TodoRestService.loadTodos().then(todos => {
+      this.store.dispatch(onLoad(todos));
+    });
+
+    // this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
     this.todos$.subscribe(todos => TodoLocalService.storeTodos(todos));
   }
 }
