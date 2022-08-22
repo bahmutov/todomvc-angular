@@ -14,4 +14,4 @@ jobs:
           start: 'npm run start:all'
           wait-on: 'http://localhost:9100'
           # run every answer spec file, ignore the placeholder files
-          config: 'excludeSpecPattern=**/spec*.cy.ts’'
+          config: 'excludeSpecPattern="**/spec*.cy.ts"'
