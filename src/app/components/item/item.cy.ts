@@ -1,6 +1,6 @@
 import { ItemComponent } from './item.component';
 
-it('shows an item', () => {
+it('shows an item (no style)', () => {
   const todo = {
     id: '101',
     title: 'Write code',
@@ -23,4 +23,26 @@ it('shows an item', () => {
     id: '101',
     completed: true
   });
+});
+
+it('shows an item', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo
+      }
+    }
+  );
+  cy.contains('li.todo', 'Write code here').find('.toggle').should('not.be.checked');
 });
