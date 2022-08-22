@@ -1,4 +1,4 @@
-<li [ngClass]="{ completed: todo.completed, editing: editing }">
+<li [ngClass]="{ completed: todo.completed, editing: editing, todo: true }">
   <div class="view">
     <input class="toggle" type="checkbox" [checked]="todo.completed" (change)="handleCompleted()" />
     <label (dblclick)="handleEdit()">{{ todo.name }}</label>
