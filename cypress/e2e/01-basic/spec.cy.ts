@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-// @ts-check
 it('loads', () => {
   // application should be running at port 9100
   // see the documentation for "cy.visit" command

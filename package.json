@@ -1,6 +1,7 @@
 {
   "name": "todomvc-angular",
   "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blacksonic/todomvc-angular.git"
