@@ -19,10 +19,13 @@ it('shows an item (no style)', () => {
   });
 
   cy.get('.toggle').check();
-  cy.get('@update').should('have.been.calledOnceWithExactly', {
-    id: '101',
-    completed: true
-  });
+  cy.get('@update').should(
+    'have.been.calledOnceWithExactly',
+    {
+      id: '101',
+      completed: true
+    }
+  );
 });
 
 it('shows an item', () => {
@@ -44,7 +47,9 @@ it('shows an item', () => {
       }
     }
   );
-  cy.contains('li.todo', 'Write code here').find('.toggle').should('not.be.checked');
+  cy.contains('li.todo', 'Write code here')
+    .find('.toggle')
+    .should('not.be.checked');
 });
 
 it('completes the item with style', () => {
@@ -69,10 +74,15 @@ it('completes the item with style', () => {
       }
     }
   );
-  cy.contains('li.todo', 'Write code here').find('.toggle').should('not.be.checked');
+  cy.contains('li.todo', 'Write code here')
+    .find('.toggle')
+    .should('not.be.checked');
   cy.get('.toggle').check();
-  cy.get('@updateSpy').should('have.been.calledOnce').its('firstCall.args.0', { timeout: 0 }).should('deep.equal', {
-    id: '101',
-    completed: true
-  });
+  cy.get('@updateSpy')
+    .should('have.been.calledOnce')
+    .its('firstCall.args.0', { timeout: 0 })
+    .should('deep.equal', {
+      id: '101',
+      completed: true
+    });
 });
