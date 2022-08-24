@@ -16,7 +16,10 @@
     "api:start": "json-server --static . --watch data.json --middlewares ./node_modules/json-server-reset",
     "api:reset": "node reset-db.js",
     "start:all": "run-p start api:start",
-    "dev": "start-test start:all 9100 e2e"
+    "dev": "start-test start:all 9100 e2e",
+    "slides": "vite --strictPort --port 3100",
+    "slides:dev": "start-test slides 3100 cy:slides",
+    "slides:build": "vite build"
   },
   "dependencies": {
     "@angular/animations": "^14.1.0-next",
@@ -52,6 +55,9 @@
     "prettier": "^2.6.2",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.7.0",
-    "typescript": "~4.6.3"
+    "typescript": "~4.6.3",
+    "vite": "3.0.9",
+    "reveal.js": "4.3.1",
+    "highlight.js": "11.6.0"
   }
 }

@@ -42,7 +42,7 @@ export const createTodoReducer = (
       fetch(TODOS_URL, {
         method: 'POST',
         body: JSON.stringify(newTodo),
-        mode: 'no-cors',
+        // mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
         }

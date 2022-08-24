@@ -3,6 +3,8 @@
 // remember to manually delete all items before running the test
 // IMPORTANT ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
+chai.config.truncateThreshold = 300;
+
 beforeEach(() => {
   cy.visit('localhost:9100');
 });
@@ -15,7 +17,9 @@ it('adds two items', () => {
   cy.get('.new-todo').type('first item{enter}');
   cy.contains('li.todo', 'first item').should('be.visible');
   cy.get('.new-todo').type('second item{enter}');
-  cy.contains('li.todo', 'second item').should('be.visible');
+  cy.contains('li.todo', 'second item').should(
+    'be.visible'
+  );
 });
 
 it('can mark an item as completed', () => {
@@ -24,12 +28,21 @@ it('can mark an item as completed', () => {
   addItem('hard');
 
   // marks the first item as completed
-  cy.contains('li.todo', 'simple').should('exist').find('.toggle').check();
+  cy.contains('li.todo', 'simple')
+    .should('exist')
+    .find('.toggle')
+    .check();
 
   // confirms the first item has the expected completed class
-  cy.contains('li.todo', 'simple').should('have.class', 'completed');
+  cy.contains('li.todo', 'simple').should(
+    'have.class',
+    'completed'
+  );
   // confirms the other items are still incomplete
-  cy.contains('li.todo', 'hard').should('not.have.class', 'completed');
+  cy.contains('li.todo', 'hard').should(
+    'not.have.class',
+    'completed'
+  );
 });
 
 it('shows the expected elements', () => {
@@ -51,10 +64,14 @@ const addItem = text => {
 };
 
 it('adds item with random text', () => {
-  const randomLabel = `Item ${Math.random().toString().slice(2, 14)}`;
+  const randomLabel = `Item ${Math.random()
+    .toString()
+    .slice(2, 14)}`;
 
   addItem(randomLabel);
-  cy.contains('li.todo', randomLabel).should('be.visible').and('not.have.class', 'completed');
+  cy.contains('li.todo', randomLabel)
+    .should('be.visible')
+    .and('not.have.class', 'completed');
 });
 
 it('starts with zero items', () => {
@@ -86,7 +103,9 @@ it('deletes all items at the start', () => {
     .should(Cypress._.noop)
     // for each todo item click the remove button
     .each($item => {
-      cy.wrap($item).find('.destroy').click({ force: true });
+      cy.wrap($item)
+        .find('.destroy')
+        .click({ force: true });
     });
   // confirm that the item is gone from the dom
   cy.get('li.todo').should('not.exist');
@@ -105,7 +124,10 @@ it('deletes all items at the start (click multiple elements)', () => {
     .should(Cypress._.noop)
     .then($destroy => {
       if ($destroy.length) {
-        cy.wrap($destroy).click({ force: true, multiple: true });
+        cy.wrap($destroy).click({
+          force: true,
+          multiple: true
+        });
       }
     });
   // confirm that the item is gone from the dom
@@ -131,10 +153,67 @@ it('adds one more todo item', () => {
     });
 });
 
+it('confirms the items were saved by reloading the page', () => {
+  // remember to delete the items manually
+  // add the new items using the UI
+  // visit the page
+  // https://on.cypress.io/visit
+  cy.visit('/');
+  // add "write code" todo
+  // add "write tests" todo
+  addItem('write code');
+  addItem('write tests');
+  // there should be 2 todos
+  cy.get('.todo').should('have.length', 2);
+  // reload the page
+  // https://on.cypress.io/reload
+  cy.reload();
+  // check if there is a todo "write code"
+  // check if there is a todo "write tests"
+  cy.contains('.todo', 'write code');
+  cy.contains('.todo', 'write tests');
+});
+
+it('confirms the items were saved by requesting them', () => {
+  // remember to delete the items manually
+  // add the new items using the UI
+  // visit the page
+  // https://on.cypress.io/visit
+  cy.visit('/');
+  // add "write code" todo
+  // add "write tests" todo
+  addItem('write code');
+  addItem('write tests');
+  // there should be 2 todos
+  cy.get('.todo').should('have.length', 2);
+  // request the page from the API :3000/todos
+  // https://on.cypress.io/request
+  cy.request('http://localhost:3000/todos')
+    // from the request, grab the response body property
+    // https://on.cypress.io/its
+    .its('body')
+    // it should have two items
+    .should('have.length', 2)
+    // the list should include an item with the title "write code"
+    // and the list should include an item with the title "write tests"
+    .should(list => {
+      expect(
+        Cypress._.find(list, { title: 'write code' }),
+        'finds the first item'
+      ).to.be.ok;
+      expect(
+        Cypress._.find(list, { title: 'write tests' }),
+        'finds the second item'
+      ).to.be.ok;
+    });
+});
+
 describe.skip('bonus tests', () => {
   it('saves the added todos', () => {
     // use a random label
-    const randomLabel = `Item ${Math.random().toString().slice(2, 14)}`;
+    const randomLabel = `Item ${Math.random()
+      .toString()
+      .slice(2, 14)}`;
 
     addItem(randomLabel);
     // make sure the application has saved the item
@@ -145,8 +224,13 @@ describe.skip('bonus tests', () => {
       // confirm the list includes an item with "title: randomLabel"
       .and(list => {
         // @ts-ignore
-        const found = Cypress._.find(list, item => item.title === randomLabel);
-        expect(found, 'has the new item').to.be.an('object');
+        const found = Cypress._.find(
+          list,
+          item => item.title === randomLabel
+        );
+        expect(found, 'has the new item').to.be.an(
+          'object'
+        );
       });
   });
 
@@ -177,7 +261,9 @@ describe.skip('bonus tests', () => {
         .should(Cypress._.noop)
         // for each todo item click the remove button
         .each($item => {
-          cy.wrap($item).find('.destroy').click({ force: true });
+          cy.wrap($item)
+            .find('.destroy')
+            .click({ force: true });
         });
       // confirm that the item is gone from the dom
       cy.get('li.todo').should('not.exist');
@@ -188,19 +274,34 @@ describe.skip('bonus tests', () => {
       addItem('simple');
       addItem('difficult');
 
-      cy.contains('[data-cy="remaining-count"]', '2').should('be.visible');
+      cy.contains(
+        '[data-cy="remaining-count"]',
+        '2'
+      ).should('be.visible');
 
       // marks the first item as completed
-      cy.contains('li.todo', 'simple').should('exist').find('.toggle').check();
+      cy.contains('li.todo', 'simple')
+        .should('exist')
+        .find('.toggle')
+        .check();
 
       // confirms the first item has the expected completed class
-      cy.contains('li.todo', 'simple').should('have.class', 'completed');
+      cy.contains('li.todo', 'simple').should(
+        'have.class',
+        'completed'
+      );
       // confirms the other items are still incomplete
-      cy.contains('li.todo', 'difficult').should('not.have.class', 'completed');
+      cy.contains('li.todo', 'difficult').should(
+        'not.have.class',
+        'completed'
+      );
 
       // check the number of remaining items
       cy.log('**completed items count**');
-      cy.contains('[data-cy="remaining-count"]', '1').should('be.visible');
+      cy.contains(
+        '[data-cy="remaining-count"]',
+        '1'
+      ).should('be.visible');
     });
 
     it('shows remaining count only if there are items', () => {
@@ -213,9 +314,13 @@ describe.skip('bonus tests', () => {
       // add one todo item
       addItem('one');
       // the footer should be visible and have the count of 1
-      cy.get('.footer').should('be.visible').contains('[data-cy="remaining-count"]', '1');
+      cy.get('.footer')
+        .should('be.visible')
+        .contains('[data-cy="remaining-count"]', '1');
       // delete the single todo
-      cy.contains('.todo', 'one').find('.destroy').click({ force: true });
+      cy.contains('.todo', 'one')
+        .find('.destroy')
+        .click({ force: true });
       // the footer is gone
       cy.get('.footer').should('not.be.visible');
     });
@@ -254,7 +359,10 @@ describe.skip('bonus tests', () => {
     cy.request('POST', '/reset', { todos: [] });
     // add an item using POST /todos call
     // passing the title and the completed: false properties
-    cy.request('POST', '/todos', { title: 'first', completed: false })
+    cy.request('POST', '/todos', {
+      title: 'first',
+      completed: false
+    })
       // from the response get the body and confirm
       // it has the expected properties, including the "id"
       .its('body')
@@ -269,8 +377,12 @@ describe.skip('bonus tests', () => {
       // and then use the DELETE /todos/:id call to delete it
       // the status of the response should be 200
       .then(id => {
-        cy.request('GET', `/todos/${id}`).its('body.title').should('eq', 'first');
-        cy.request('DELETE', `/todos/${id}`).its('status').should('equal', 200);
+        cy.request('GET', `/todos/${id}`)
+          .its('body.title')
+          .should('eq', 'first');
+        cy.request('DELETE', `/todos/${id}`)
+          .its('status')
+          .should('equal', 200);
       });
   });
 
@@ -279,20 +391,30 @@ describe.skip('bonus tests', () => {
     cy.request('POST', '/reset', { todos: [] });
     // create a new item using cy.request POST /todos call
     // and get its ID from the response
-    cy.request('POST', '/todos', { title: 'my item', completed: false })
+    cy.request('POST', '/todos', {
+      title: 'my item',
+      completed: false
+    })
       .its('body.id')
       .then(id => {
         // confirm the item is not completed by fetching it using GET /todos/:id
-        cy.request('GET', `/todos/${id}`).its('body.completed').should('be.false');
+        cy.request('GET', `/todos/${id}`)
+          .its('body.completed')
+          .should('be.false');
         // complete the item using the PATCH /todos/:id call
         // with { completed: true }
-        cy.request('PATCH', `/todos/${id}`, { completed: true });
+        cy.request('PATCH', `/todos/${id}`, {
+          completed: true
+        });
       });
 
     // after completing the item via an API call
     // visit the page (or reload) and confirm it is shown as completed
     cy.visit('/');
-    cy.contains('.todo', 'my item').should('have.class', 'completed');
+    cy.contains('.todo', 'my item').should(
+      'have.class',
+      'completed'
+    );
     // confirm the count of remaining items is 0
     cy.contains('[data-cy="remaining-count"]', '0');
   });
@@ -315,9 +437,15 @@ describe.skip('bonus tests', () => {
         cy.reload();
         items.forEach(item => {
           if (item.completed) {
-            cy.contains('.todo', item.title).should('have.class', 'completed');
+            cy.contains('.todo', item.title).should(
+              'have.class',
+              'completed'
+            );
           } else {
-            cy.contains('.todo', item.title).should('not.have.class', 'completed');
+            cy.contains('.todo', item.title).should(
+              'not.have.class',
+              'completed'
+            );
           }
         });
       });
@@ -332,9 +460,15 @@ describe.skip('bonus tests', () => {
     // confirm the page title includes the string "TodoMVC"
     cy.get('head title').should('include.text', 'TodoMVC');
     // confirm the meta tag name is "Gleb Bahmutov"
-    cy.get('head meta[name=author]').should('have.attr', 'content', 'Gleb Bahmutov');
+    cy.get('head meta[name=author]').should(
+      'have.attr',
+      'content',
+      'Gleb Bahmutov'
+    );
     // confirm the meta tag description includes the expected text "workshop"
-    cy.get('head meta[name=description]').should('have.attr', 'content').should('include', 'workshop');
+    cy.get('head meta[name=description]')
+      .should('have.attr', 'content')
+      .should('include', 'workshop');
   });
 });
 

@@ -1,54 +1,24 @@
 {
   "todos": [
     {
-      "title": "todo 0",
-      "completed": false,
-      "id": "id-0"
+      "id": "9863335012",
+      "title": "write code",
+      "completed": false
     },
     {
-      "title": "todo 1",
-      "completed": false,
-      "id": "id-1"
+      "id": "7691679196",
+      "title": "write tests",
+      "completed": false
     },
     {
-      "title": "todo 2",
-      "completed": false,
-      "id": "id-2"
+      "id": "1834803909",
+      "title": "write code",
+      "completed": false
     },
     {
-      "title": "todo 3",
-      "completed": false,
-      "id": "id-3"
-    },
-    {
-      "title": "todo 4",
-      "completed": false,
-      "id": "id-4"
-    },
-    {
-      "title": "todo 5",
-      "completed": false,
-      "id": "id-5"
-    },
-    {
-      "title": "todo 6",
-      "completed": false,
-      "id": "id-6"
-    },
-    {
-      "title": "todo 7",
-      "completed": false,
-      "id": "id-7"
-    },
-    {
-      "title": "todo 8",
-      "completed": false,
-      "id": "id-8"
-    },
-    {
-      "title": "todo 9",
-      "completed": false,
-      "id": "id-9"
+      "id": "4384232951",
+      "title": "write tests",
+      "completed": false
     }
   ]
 }

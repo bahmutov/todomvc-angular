@@ -14,6 +14,9 @@ import { onLoad } from '../../store/actions/todo.action';
 export class AppComponent implements OnInit {
   todos$: Observable<TodoInterface[]>;
 
+  // let's not use a state model
+  // and instead struggle :)
+  loading: boolean;
   loaded: boolean;
 
   constructor(private store: Store<TodoStateInterface>) {
@@ -21,16 +24,22 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    TodoRestService.loadTodos().then(todos => {
-      this.loaded = true;
-      this.store.dispatch(onLoad(todos));
+    this.loading = true;
 
-      // @ts-ignore
-      if (window.Cypress) {
+    TodoRestService.loadTodos()
+      .then(todos => {
+        this.loaded = true;
+        this.store.dispatch(onLoad(todos));
+
         // @ts-ignore
-        window.todos = todos;
-      }
-    });
+        if (window.Cypress) {
+          // @ts-ignore
+          window.todos = todos;
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
 
     // this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
     this.todos$.subscribe(todos =>

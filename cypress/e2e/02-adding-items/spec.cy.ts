@@ -34,6 +34,42 @@ it('can mark an item as completed', () => {
   // check the number of remaining items
 });
 
+it('confirms the items were saved by reloading the page', () => {
+  // remember to delete the items manually
+  // add the new items using the UI
+  // visit the page
+  // https://on.cypress.io/visit
+  //
+  // add "write code" todo
+  // add "write tests" todo
+  // there should be 2 todos
+  //
+  // reload the page
+  // https://on.cypress.io/reload
+  //
+  // check if there is a todo "write code"
+  // check if there is a todo "write tests"
+});
+
+it('confirms the items were saved by requesting them', () => {
+  // remember to delete the items manually
+  // add the new items using the UI
+  // visit the page
+  // https://on.cypress.io/visit
+  //
+  // add "write code" todo
+  // add "write tests" todo
+  // there should be 2 todos
+  //
+  // request the page from the API :3000/todos
+  // https://on.cypress.io/request
+  // from the request, grab the response body property
+  // https://on.cypress.io/its
+  // it should have two items
+  // the list should include an item with the title "write code"
+  // and the list should include an item with the title "write tests"
+});
+
 it('can delete an item', () => {
   // adds a few items
   // deletes the first item
