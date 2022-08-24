@@ -18,7 +18,6 @@
     "start:all": "run-p start api:start",
     "dev": "start-test start:all 9100 e2e",
     "slides": "vite --strictPort --port 3100",
-    "slides:dev": "start-test slides 3100 cy:slides",
     "slides:build": "vite build"
   },
   "dependencies": {

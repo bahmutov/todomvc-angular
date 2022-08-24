@@ -13,12 +13,12 @@
 
 ```bash
 $ node -v
-v14.17.1
+v16.14.0
 $ npm -v
-6.14.13
+8.11.0
 # optional:
 $ yarn -v
-1.22.10
+1.22.18
 ```
 
 If you need to install Node, see [Basics Requirements](https://github.com/bahmutov/cypress-workshop-basics#requirements) and 📹 [Install Node and Cypress](https://www.youtube.com/watch?v=09KbTRLrgWA)
@@ -39,21 +39,19 @@ Create a new folder
 
 ### Cypress bin
 
-When you run `npm install cypress` it creates a "cypress" alias in the `node_modules/.bin" folder. You can see all tools that install aliases (depending on the platform)
+When you run `npm install cypress` it creates a "cypress" alias in the `node_modules/.bin` folder. You can see all tools that install aliases (depending on the platform)
 
 ```text
 $ ls node_modules/.bin
-cypress			nanoid			rollup			sshpk-verify		vite
-esbuild			prettier		server-test		start-server-and-test	wait-on
-extract-zip		ps-tree			sshpk-conv		start-test
-is-ci			rimraf			sshpk-sign		uuid
+cypress			nanoid			rollup			sshpk-verify
+vite    esbuild			prettier		server-test
 ```
 
 Let's run Cypress alias
 
 +++
 
-### How to open Cypress
+### How to open Cypress 🗃
 
 ```shell
 npx cypress open
@@ -75,14 +73,16 @@ In `package.json` I usually have
 {
   "scripts": {
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "cy:e2e": "cypress open --e2e --browser electron",
+    "cy:component": "cypress open --component --browser electron"
   }
 }
 ```
 
 And I use `npm run cy:open`
 
-**Tip:** read [https://glebbahmutov.com/blog/organize-npm-scripts/](https://glebbahmutov.com/blog/organize-npm-scripts/)
+**Tip:** read [https://glebbahmutov.com/blog/organize-npm-scripts/](https://glebbahmutov.com/blog/organize-npm-scripts/) and [https://glebbahmutov.com/blog/cypress-v10-tips/](https://glebbahmutov.com/blog/cypress-v10-tips/)
 
 ---
 
@@ -90,24 +90,21 @@ And I use `npm run cy:open`
 
 +++
 
-## Cypress files and folders
+## Cypress files and folders 🗂
 
-- "cypress.json" - all Cypress settings
-- "cypress/integration" - test files (specs)
+- "cypress.config.js | ts" - all Cypress settings and Node code
+- "cypress/e2e" - end-to-end test files ("\*.cy.js | ts" specs)
 - "cypress/fixtures" - mock data <!-- .element: class="fragment" -->
-- "cypress/plugins" - extending Cypress in Node<!-- .element: class="fragment" -->
 - "cypress/support" - shared commands, utilities <!-- .element: class="fragment" -->
-
-Read blog post [Cypress is just ...](https://glebbahmutov.com/blog/cypress-is/)
 
 Note:
 This section shows how Cypress scaffolds its files and folders. Then the students can ignore this folder. This is only done once to show the scaffolding.
 
 ---
 
-Look at the scaffolded example test files (specs).
+You can scaffold the example specs.
 
-Run specs for topics that look interesting
+- Run specs for topics that look interesting
 
 ---
 
@@ -139,22 +136,27 @@ Repo [github.com/bahmutov/cly](https://github.com/bahmutov/cly)
 
 Let's test our TodoMVC application. Create a new spec file
 
-- `cypress/integration/spec.js`
+- `cypress/e2e/spec.cy.js`
 
 +++
 
-Type into the `spec.js` our first test
+Type into the `spec.cy.js` our first test
 
 ```javascript
+// cypress/e2e/spec.cy.js
 it('loads', () => {
-  cy.visit('localhost:3000')
-})
+  cy.visit('localhost:9100');
+});
 ```
 
 +++
 
-- make sure you have started TodoMVC in another terminal with `npm start`
-- click on "spec.js" in Cypress GUI
+- make sure you have started TodoMVC in another terminal with `npm run start:all`
+- click on "spec.cy.js" in Cypress GUI
+
++++
+
+![The first test](./img/first-test.png)
 
 +++
 
@@ -176,8 +178,8 @@ Add a special `/// ...` comment
 ```javascript
 /// <reference types="cypress" />
 it('loads', () => {
-  cy.visit('localhost:3000')
-})
+  cy.visit('localhost:9100');
+});
 ```
 
 - why do we need `reference types ...` line?
@@ -205,8 +207,8 @@ Using `ts-check`
 /// <reference types="cypress" />
 // @ts-check
 it('loads', () => {
-  cy.visit('localhost:3000')
-})
+  cy.visit('localhost:9100');
+});
 ```
 
 - what happens if you add `ts-check` line and misspell `cy.visit`?
@@ -259,7 +261,7 @@ The above URL goes right to the documentation for that command.
   - example applications
   - blogs
   - FAQ
-- Cypress changelog and roadmap
+- Cypress changelog and the road map
 
 Note:
 Students should know where to find information later on. Main resources is the api page [https://on.cypress.io/api](https://on.cypress.io/api)
@@ -279,4 +281,4 @@ Students should know where to find information later on. Main resources is the a
 - use IntelliSense
 - use Docs are [https://docs.cypress.io/](https://docs.cypress.io/)
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
