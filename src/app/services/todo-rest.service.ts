@@ -8,15 +8,18 @@ export class TodoRestService {
     // return JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
     const res = await fetch(TODOS_URL);
     if (!res.ok) {
-      console.error(res);
-      throw new Error(`Could not load initial todos`);
+      console.error('could not load todos');
+      const message = await res.text();
+      console.error(message);
+      throw new Error(message);
     }
     const todos = await res.json();
-    console.log(todos);
+    // console.log(todos);
     return todos;
   }
 
   static async storeTodos(todos: TodoInterface[]) {
+    console.log('storeTodos');
     await fetch(`${API_URL}/reset`, {
       method: 'POST',
       body: JSON.stringify({ todos })

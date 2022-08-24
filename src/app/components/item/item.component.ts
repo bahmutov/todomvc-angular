@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { TodoInterface } from '../../services/todo.interface';
 
 @Component({
@@ -21,7 +28,6 @@ export class ItemComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.todo) {
-      console.log(changes.todo.currentValue);
       this.title = changes.todo.currentValue.title;
     }
   }
@@ -31,7 +37,10 @@ export class ItemComponent implements OnChanges {
   }
 
   handleBlur() {
-    this.update.emit({ id: this.todo.id, title: this.title });
+    this.update.emit({
+      id: this.todo.id,
+      title: this.title
+    });
     this.editing = false;
   }
 
@@ -40,8 +49,9 @@ export class ItemComponent implements OnChanges {
   }
 
   handleCompleted() {
-    console.log('completed');
-    console.log(this.update, this.update.emit);
-    this.update.emit({ id: this.todo.id, completed: !this.todo.completed });
+    this.update.emit({
+      id: this.todo.id,
+      completed: !this.todo.completed
+    });
   }
 }

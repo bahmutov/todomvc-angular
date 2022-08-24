@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const debug = require('debug')('cypress-workshop-basics');
 
-const getDbFilename = () => path.join(__dirname, 'data.json');
+const getDbFilename = () =>
+  path.join(__dirname, 'data.json');
 
 /**
  * Default object representing our "database" file in "data.json"
@@ -15,10 +16,19 @@ const DEFAULT_DATA = {
 
 const resetData = (dataToSet = DEFAULT_DATA) => {
   const dbFilename = getDbFilename();
-  debug('reset data file %s with %o', dbFilename, dataToSet);
+  debug(
+    'reset data file %s with %o',
+    dbFilename,
+    dataToSet
+  );
   if (!dataToSet) {
-    console.error('Cannot save empty object in %s', dbFilename);
-    throw new Error('Cannot save empty object in resetData');
+    console.error(
+      'Cannot save empty object in %s',
+      dbFilename
+    );
+    throw new Error(
+      'Cannot save empty object in resetData'
+    );
   }
   const str = JSON.stringify(dataToSet, null, 2) + '\n';
   fs.writeFileSync(dbFilename, str, 'utf8');
@@ -38,6 +48,8 @@ export default defineConfig({
     env: {
       api: 'http://localhost:3000'
     },
+    viewportWidth: 1000,
+    viewportHeight: 1200,
     // hide the answer test files
     // excludeSpecPattern: '**/answer*.cy.ts',
     setupNodeEvents(on, config) {

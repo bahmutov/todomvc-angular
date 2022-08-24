@@ -24,9 +24,17 @@ export class AppComponent implements OnInit {
     TodoRestService.loadTodos().then(todos => {
       this.loaded = true;
       this.store.dispatch(onLoad(todos));
+
+      // @ts-ignore
+      if (window.Cypress) {
+        // @ts-ignore
+        window.todos = todos;
+      }
     });
 
     // this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
-    this.todos$.subscribe(todos => TodoLocalService.storeTodos(todos));
+    this.todos$.subscribe(todos =>
+      TodoLocalService.storeTodos(todos)
+    );
   }
 }
