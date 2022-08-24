@@ -35,7 +35,13 @@ Create a new folder
 - `npm init --yes`
 - `npm install -D cypress`
 
-+++
+---
+
+## Cypress is all-in-one testing tool 🧰
+
+![Change in dev dependencies](./img/deps-change.png)
+
+---
 
 ### Cypress bin
 
