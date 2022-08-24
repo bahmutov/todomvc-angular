@@ -215,13 +215,13 @@ Implement the test "adds one more todo item"
 
 ---
 
-## Check the items are preserved
+## Todo: Check the items are preserved
 
 Implement the test "confirms the items were saved by reloading the page"
 
 ---
 
-## Check the items on the server
+## Todo: Check the items on the server
 
 🙋🏻‍♂️ How does the application load its todos? Can the test use the same method to checked the saved items? **Hint:** use the [cy.request](https://on.cypress.io/request)
 
@@ -229,7 +229,7 @@ Implement the test "confirms the items were saved by requesting them"
 
 ---
 
-## Checking the saved items
+## Todo: Checking the saved items
 
 The application saves the items in "data.json" file. Can we verify that a new item has been saved?
 
@@ -356,14 +356,14 @@ describe('Feature A', () => {
 
 ## Support file
 
-Support file is included before each spec file.
+Support file is included before each spec file. **Note** actual files are loaded using XHRs
 
 ```html
 <script src="cypress/support/e2e.ts"></script>
 <script src="cypress/e2e/spec.cy.ts"></script>
 ```
 
-**Tip:** Want to reset the data and visit the site before each test? Put the commands into `beforeEach` hook inside the support file.
+Tip: Want to reset the data and visit the site before each test? Put the commands into "beforeEach" hook inside the support file. <!-- .element: class="fragment" -->
 
 ---
 

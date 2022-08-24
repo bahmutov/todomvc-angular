@@ -3,7 +3,6 @@
 // IMPORTANT ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
 it('adds two items', () => {
-  cy.get('foo').realHover();
   // visit the site
   // https://on.cypress.io/visit
   // repeat twice
