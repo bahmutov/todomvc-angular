@@ -1,15 +1,9 @@
-/// <reference types="cypress" />
-it('loads', () => {
-  // application should be running at port 9100
-  cy.visit('localhost:9100');
-  cy.contains('h1', 'todos');
-});
-
 // IMPORTANT ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 // remember to manually delete all items before running the test
 // IMPORTANT ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
 it('adds two items', () => {
+  cy.get('foo').realHover();
   // visit the site
   // https://on.cypress.io/visit
   // repeat twice
@@ -115,6 +109,7 @@ it('starts with zero items', () => {
 it('disables the built-in assertion', () => {
   // try to get a non-existent element
   // without failing the test
+  // cy.get('does-not-exist')
   // pass it to the `.then($el)` callback
   // to check it yourself
 });

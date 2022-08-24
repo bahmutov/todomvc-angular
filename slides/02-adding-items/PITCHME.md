@@ -19,8 +19,8 @@ Longer tests, adding items then deleting one for example. Adding items via GUI a
 ## Let's test
 
 - keep `todomvc` app running
-- open `cypress/integration/02-adding-items/spec.js` in your text editor
-- click file `02-adding-items/spec.js` in Cypress
+- open `cypress/e2e/02-adding-items/spec.cy.ts` in your text editor
+- click file `02-adding-items/spec.cy.ts` in Cypress
 
 +++
 
@@ -35,7 +35,7 @@ We will reset the previously saved Todo items in section "4 Reset State".
 ## Todo: Make this test work
 
 ```js
-// cypress/integration/02-adding-items/spec.js
+// cypress/e2e/02-adding-items/spec.cy.ts
 it.only('adds two items', () => {
   // visit the site
   // https://on.cypress.io/visit
@@ -53,9 +53,13 @@ it.only('adds two items', () => {
 **tip** use `cy.get`, `cy.type`, `cy.contains`, `cy.click`, remember `https://on.cypress.io/<command>`
 
 Note:
-Draw distinction between commands and assertions, show how commands can be chained,
-each continues to work with the subject of the previous command. Assertions do
-not change the subject.
+Draw distinction between commands and assertions, show how commands can be chained, each continues to work with the subject of the previous command. Assertions do not change the subject.
+
++++
+
+## Adds two items
+
+![Adds two items test](./img/adds-two-items.png)
 
 +++
 
@@ -79,6 +83,7 @@ it('can mark an item as completed', () => {
 
 ## Refactor code 1/3
 
+- create a suite of tests using `describe`
 - visit the page before each test
 
 Note:
@@ -88,7 +93,7 @@ Avoid duplicate `cy.visit('localhost:3000')` command at the start of each test.
 
 ## Refactor code 2/3
 
-- move the url into `cypress.json`
+- move the base url into `cypress.config.ts`
 
 **tip** look at [https://on.cypress.io/configuration](https://on.cypress.io/configuration)
 
@@ -115,6 +120,22 @@ it('can delete an item', () => {
   // confirm the deleted item is gone from the dom
   // confirm the other item still exists
 });
+```
+
++++
+
+## Implement hover 🕴
+
+Install [cypress-real-events](https://github.com/dmtrKovalenko/cypress-real-events) and use `cy.realHover` command in the "can delete an item" test.
+
+```js
+cy.contains('li.todo', 'second item')
+  .should('be.visible')
+  .realHover()
+  .find('.destroy')
+  // use the cy.wait command to make it clear what is going on
+  .wait(1000)
+  .click();
 ```
 
 ---
@@ -189,40 +210,32 @@ Implement the test "adds one more todo item"
 
 ## 💡 Pro tips
 
-- resize the viewport in `cypress.json`
-- set up IntelliSense in `cypress.json` using [https://on.cypress.io/intelligent-code-completion](https://on.cypress.io/intelligent-code-completion)
+- resize the viewport in `cypress.config.ts`
+- resize the viewport per test
+
+---
+
+## Check the items are preserved
+
+Implement the test "confirms the items were saved by reloading the page"
+
+---
+
+## Check the items on the server
+
+🙋🏻‍♂️ How does the application load its todos? Can the test use the same method to checked the saved items? **Hint:** use the [cy.request](https://on.cypress.io/request)
+
+Implement the test "confirms the items were saved by requesting them"
 
 ---
 
 ## Checking the saved items
 
-The application saves the items in "todomvc/data.json" file. Can we verify that a new item has been saved?
+The application saves the items in "data.json" file. Can we verify that a new item has been saved?
 
 Todo: write the test "saves the added todos"
 
 **Tip:** use [cy.task](https://on.cypress.io/task) in the plugins file or [cy.readFile](https://on.cypress.io/readfile)
-
----
-
-## Adding blank item
-
-The application does not allow adding items with blank titles. What happens when the user does it? Hint: open DevTools console.
-
-+++
-
-## Todo: finish this test
-
-```js
-it('does not allow adding blank todos', () => {
-  // https://on.cypress.io/catalog-of-events#App-Events
-  cy.on('uncaught:exception', () => {
-    // check e.message to match expected error text
-    // return false if you want to ignore the error
-  });
-
-  // try adding an item with just spaces
-});
-```
 
 ---
 
@@ -307,16 +320,16 @@ test('add', () => {
 Organize tests using folder structure and spec files
 
 ```text
-cypress/integration/
+cypress/e2e/
   featureA/
-    first-spec.js
-    second-spec.js
+    first-spec.cy.js
+    second-spec.cy.js
   featureB/
-    another-spec.js
-    errors-spec.js
+    another-spec.cy.js
+    errors-spec.cy.js
 ```
 
-**Tip:** splitting longer specs into smaller ones allows to run them faster in parallel mode https://glebbahmutov.com/blog/split-spec/
+**Tip:** splitting longer specs into smaller ones allows to run them faster in parallel mode [glebbahmutov.com/blog/split-spec/](https://glebbahmutov.com/blog/split-spec/)
 
 +++
 
@@ -346,11 +359,11 @@ describe('Feature A', () => {
 Support file is included before each spec file.
 
 ```html
-<script src="cypress/support/index.js"></script>
-<script src="cypress/integration/spec.js"></script>
+<script src="cypress/support/e2e.ts"></script>
+<script src="cypress/e2e/spec.cy.ts"></script>
 ```
 
-**Tip:** Want to reset the data and visit the site before each test? Put the commands into `beforeEach` hook inside the suport file.
+**Tip:** Want to reset the data and visit the site before each test? Put the commands into `beforeEach` hook inside the support file.
 
 ---
 
@@ -359,4 +372,4 @@ Support file is included before each spec file.
 - go through UI
 - validate the application after actions
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)

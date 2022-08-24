@@ -222,6 +222,14 @@ it('loads', () => {
 Note:
 The check works really well in VSCode editor. I am not sure how well other editors support Cypress type checks right out of the box.
 
++++
+
+## 💡 TypeScript
+
+If your project has `typescript` dependency, you should be able to write TS specs right away, just like in our `todomvc-angular` project
+
+📚 Read the blog post "Convert Cypress Specs from JavaScript to TypeScript" [glebbahmutov.com/blog/cypress-js-to-ts/](https://glebbahmutov.com/blog/cypress-js-to-ts/)
+
 ---
 
 ## Docs
