@@ -5,6 +5,7 @@
 // see https://on.cypress.io/intercept
 // and https://cypress.tips/courses/network-testing
 
+// @ts-ignore
 import threeTodos from '../../fixtures/three-items.json';
 
 const api = Cypress.env('api');

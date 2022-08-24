@@ -1,5 +1,4 @@
 import { createReducer, on } from '@ngrx/store';
-import { v4 as uuidv4 } from 'uuid';
 import { TodoInterface } from '../../services/todo.interface';
 import {
   onClearCompleted,
@@ -43,9 +42,12 @@ export const createTodoReducer = (
       fetch(TODOS_URL, {
         method: 'POST',
         body: JSON.stringify(newTodo),
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
         }
+      }).catch(e => {
+        console.error(e);
       });
 
       return [...state, newTodo];
