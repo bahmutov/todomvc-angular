@@ -127,7 +127,7 @@ Let us look at the application.
 
 - `npm install`
 - `npm run start:all`
-- `open localhost:3000`
+- `open localhost:9100`
 
 **important** keep application running through the entire workshop!
 
@@ -174,4 +174,6 @@ The students should open DevTools and look at XHR requests that go between the w
 
 ---
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+**Let's test it!**
+
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
