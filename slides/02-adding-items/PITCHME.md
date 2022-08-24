@@ -47,7 +47,7 @@ it.only('adds two items', () => {
   //    assert that the new Todo item
   //    has been added added to the list
   // cy.get(...).should('have.length', 2)
-})
+});
 ```
 
 **tip** use `cy.get`, `cy.type`, `cy.contains`, `cy.click`, remember `https://on.cypress.io/<command>`
@@ -72,7 +72,7 @@ it('can mark an item as completed', () => {
   // confirms the first item has the expected completed class
   // confirms the other items are still incomplete
   // check the number of remaining items
-})
+});
 ```
 
 +++
@@ -114,7 +114,7 @@ it('can delete an item', () => {
   // use force: true because we don't want to hover
   // confirm the deleted item is gone from the dom
   // confirm the other item still exists
-})
+});
 ```
 
 ---
@@ -127,7 +127,7 @@ it('adds item with random text', () => {
   // or Cypress._.random() to generate unique text label
   // add such item
   // and make sure it is visible and does not have class "completed"
-})
+});
 ```
 
 ---
@@ -142,7 +142,7 @@ it('starts with zero items', () => {
   //   https://on.cypress.io/get
   //   ".should('have.length', 0)"
   //   or ".should('not.exist')"
-})
+});
 ```
 
 ---
@@ -150,9 +150,9 @@ it('starts with zero items', () => {
 ## Default assertions
 
 ```js
-cy.get('li.todo')
+cy.get('li.todo');
 // is the same as
-cy.get('li.todo').should('exist')
+cy.get('li.todo').should('exist');
 ```
 
 See [cy.get Assertions](https://on.cypress.io/get#Assertions)
@@ -162,9 +162,9 @@ See [cy.get Assertions](https://on.cypress.io/get#Assertions)
 What if you do not know if an element exists? You can disable the built-in assertions using a "dummy" `should(cb)` assertion.
 
 ```js
-cy.get('li.todo').should(() => {})
+cy.get('li.todo').should(() => {});
 // or using the bundled Lodash
-cy.get('li.todo').should(Cypress._.noop)
+cy.get('li.todo').should(Cypress._.noop);
 ```
 
 Todo: write test "disables the built-in assertion".
@@ -218,10 +218,10 @@ it('does not allow adding blank todos', () => {
   cy.on('uncaught:exception', () => {
     // check e.message to match expected error text
     // return false if you want to ignore the error
-  })
+  });
 
   // try adding an item with just spaces
-})
+});
 ```
 
 ---
@@ -233,10 +233,10 @@ Unit tests vs end-to-end tests
 ### Unit tests
 
 ```javascript
-import add from './add'
+import add from './add';
 test('add', () => {
-  expect(add(2, 3)).toBe(5)
-})
+  expect(add(2, 3)).toBe(5);
+});
 ```
 
 - arrange - action - assertion
@@ -246,23 +246,27 @@ test('add', () => {
 ### End-to-end tests
 
 ```javascript
-const addItem = (text) => {
-  cy.get('.new-todo').type(`${text}{enter}`)
-}
+const addItem = text => {
+  cy.get('.new-todo').type(`${text}{enter}`);
+};
 it('can mark items as completed', () => {
-  const ITEM_SELECTOR = 'li.todo'
-  addItem('simple')
-  addItem('difficult')
+  const ITEM_SELECTOR = 'li.todo';
+  addItem('simple');
+  addItem('difficult');
   cy.contains(ITEM_SELECTOR, 'simple')
     .should('exist')
     .find('input[type="checkbox"]')
-    .check()
+    .check();
   // have to force click because the button does not appear unless we hover
-  cy.contains(ITEM_SELECTOR, 'simple').find('.destroy').click({ force: true })
-  cy.contains(ITEM_SELECTOR, 'simple').should('not.exist')
-  cy.get(ITEM_SELECTOR).should('have.length', 1)
-  cy.contains(ITEM_SELECTOR, 'difficult').should('be.visible')
-})
+  cy.contains(ITEM_SELECTOR, 'simple')
+    .find('.destroy')
+    .click({ force: true });
+  cy.contains(ITEM_SELECTOR, 'simple').should('not.exist');
+  cy.get(ITEM_SELECTOR).should('have.length', 1);
+  cy.contains(ITEM_SELECTOR, 'difficult').should(
+    'be.visible'
+  );
+});
 ```
 
 command - assertion - command - assertion (CACA pattern)
@@ -286,10 +290,10 @@ Revisit the discussion about what kind of tests one should write. E2E tests can 
 Does this test run in Cypress?
 
 ```javascript
-import add from './add'
+import add from './add';
 test('add', () => {
-  expect(add(2, 3)).toBe(5)
-})
+  expect(add(2, 3)).toBe(5);
+});
 ```
 
 +++
@@ -320,19 +324,19 @@ Organize tests inside a spec using Mocha functions
 
 ```js
 describe('Feature A', () => {
-  beforeEach(() => {})
+  beforeEach(() => {});
 
-  it('works', () => {})
+  it('works', () => {});
 
-  it('handles error', () => {})
+  it('handles error', () => {});
 
   // context is alias of describe
   context('in special case', () => {
-    it('starts correctly', () => {})
+    it('starts correctly', () => {});
 
-    it('works', () => {})
-  })
-})
+    it('works', () => {});
+  });
+});
 ```
 
 +++
