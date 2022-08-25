@@ -51,7 +51,7 @@ export default defineConfig({
     viewportWidth: 1000,
     viewportHeight: 1200,
     // hide the answer test files
-    // excludeSpecPattern: '**/answer*.cy.ts',
+    excludeSpecPattern: '**/answer*.cy.ts',
     setupNodeEvents(on, config) {
       // implement node event listeners here
       on('task', {

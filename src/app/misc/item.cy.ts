@@ -1,4 +1,4 @@
-import { ItemComponent } from './item.component';
+import { ItemComponent } from '../components/item/item.component';
 
 it('shows an item (no style)', () => {
   const todo = {

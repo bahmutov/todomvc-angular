@@ -1,16 +1,15 @@
-## ☀️ Part 6: Application data store
+## ☀️ Part 6: Component Testing
 
 ### 📚 You will learn
 
-- how to access the running application from test code
+- how to write an Angular Component Test
 - how to spy on or stub an application method
-- how to drive application by dispatching actions
 
 +++
 
-- keep `todomvc` app running
-- open `cypress/integration/06-app-data-store/spec.js`
-- test that Vuex data store is working correctly
+- close the `todomvc` app 🤯
+
+Component tests live close to their components in the "src" folder
 
 ---
 
@@ -25,7 +24,7 @@ it('logs a todo add message to the console', () => {
   // add a new todo item
   // get the spy and check that it was called
   // with the expected arguments
-})
+});
 ```
 
 Read [https://on.cypress.io/stubs-spies-and-clocks](https://on.cypress.io/stubs-spies-and-clocks) and [https://glebbahmutov.com/cypress-examples/commands/spies-stubs-clocks.html](https://glebbahmutov.com/cypress-examples/commands/spies-stubs-clocks.html)
@@ -39,7 +38,7 @@ Read [https://on.cypress.io/stubs-spies-and-clocks](https://on.cypress.io/stubs-
 // if you want to expose "app" globally only
 // during end-to-end tests you can guard it using "window.Cypress" flag
 // if (window.Cypress) {
-window.app = app
+window.app = app;
 // }
 ```
 
@@ -57,8 +56,8 @@ it('has window.app property', () => {
   // get its "app" property
   // and confirm it is an object
   // see https://on.cypress.io/its
-  cy.window()
-})
+  cy.window();
+});
 ```
 
 ---
@@ -71,8 +70,8 @@ it('has window.app property', () => {
   // get the app.$store property
   // and confirm it has expected Vuex properties
   // see https://on.cypress.io/its
-  cy.window()
-})
+  cy.window();
+});
 ```
 
 ---
@@ -82,8 +81,8 @@ it('has window.app property', () => {
 ```js
 it('starts with an empty store', () => {
   // the list of todos in the Vuex store should be empty
-  cy.window()
-})
+  cy.window();
+});
 ```
 
 ---
@@ -94,16 +93,16 @@ Let's add two items via the page, then confirm the Vuex store has them
 
 ```javascript
 // cypress/integration/06-app-data-store/spec.js
-const addItem = (text) => {
-  cy.get('.new-todo').type(`${text}{enter}`)
-}
+const addItem = text => {
+  cy.get('.new-todo').type(`${text}{enter}`);
+};
 it('adds items to store', () => {
-  addItem('something')
-  addItem('something else')
+  addItem('something');
+  addItem('something else');
   // get application's window
   // then get app, $store, state, todos
   // it should have 2 items
-})
+});
 ```
 
 ---
@@ -118,7 +117,7 @@ cy.window()
   .should('deep.equal', [
     { title: 'something', completed: false, id: '1' },
     { title: 'else', completed: false, id: '2' }
-  ])
+  ]);
 ```
 
 +++
@@ -192,7 +191,7 @@ it('adds todos via app', () => {
   // app.$store.dispatch('setNewTodo', <desired text>)
   // app.$store.dispatch('addTodo')
   // and then check the UI
-})
+});
 ```
 
 +++
@@ -202,10 +201,12 @@ it('adds todos via app', () => {
 ```js
 it('handles todos with blank title', () => {
   // add todo that the user cannot add via UI
-  cy.window().its('app.$store').invoke('dispatch', 'setNewTodo', '  ')
+  cy.window()
+    .its('app.$store')
+    .invoke('dispatch', 'setNewTodo', '  ');
   // app.$store.dispatch('addTodo')
   // confirm the UI
-})
+});
 ```
 
 +++
@@ -215,13 +216,13 @@ it('handles todos with blank title', () => {
 Note that the web application might NOT have updated the data right away. For example:
 
 ```js
-getStore().then((store) => {
-  store.dispatch('setNewTodo', 'a new todo')
-  store.dispatch('addTodo')
-  store.dispatch('clearNewTodo')
-})
+getStore().then(store => {
+  store.dispatch('setNewTodo', 'a new todo');
+  store.dispatch('addTodo');
+  store.dispatch('clearNewTodo');
+});
 // not necessarily has the new item right away
-getStore().its('state')
+getStore().its('state');
 ```
 
 Note:
@@ -236,7 +237,7 @@ In a flaky test https://github.com/cypress-io/cypress-example-recipes/issues/246
 ```js
 // add new todo using dispatch
 // retry until new item is in the list
-getStore().its('state.todos').should('have.length', 1)
+getStore().its('state.todos').should('have.length', 1);
 // do other checks
 ```
 

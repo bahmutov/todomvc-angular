@@ -2,7 +2,7 @@
 
 - [github.com/bahmutov/todomvc-angular](https://github.com/bahmutov/todomvc-angular)
 
-Jump to: [00-start](?p=00-start), [01-basic](?p=01-basic), [02-adding-items](?p=02-adding-items), [03-selector-playground](?p=03-selector-playground), [04-reset-state](?p=04-reset-state), [05-xhr](?p=05-xhr), [06-app-data-store](?p=06-app-data-store), [07-ci](?p=07-ci), [08-retry-ability](?p=08-retry-ability), [09-custom-commands](?p=09-custom-commands), [end](?p=end)
+Jump to: [00-start](?p=00-start), [01-basic](?p=01-basic), [02-adding-items](?p=02-adding-items), [03-selector-playground](?p=03-selector-playground), [04-reset-state](?p=04-reset-state), [05-xhr](?p=05-xhr), [06-component-testing](?p=06-component-testing), [07-ci](?p=07-ci), [08-retry-ability](?p=08-retry-ability), [09-custom-commands](?p=09-custom-commands), [end](?p=end)
 
 +++
 
@@ -103,11 +103,11 @@ npm install
 
 ---
 
-## Repo organization
+## 🗃 Repo organization
 
 - includes a web application we are going to test (port 9100)
 - includes a REST API (port 3000)
-- all tests are in `cypress/integration` folder
+- all tests are in `cypress/e2e` folder
   - there are subfolders for exercises
     - `01-basic`
     - `02-adding-items`
@@ -121,12 +121,27 @@ We are going to keep the app running, while switching from spec to spec for each
 
 +++
 
+## 🖥 Slides
+
+All slides are in the repo, organized by section
+
+- `slides/intro/PITCHME.md` this deck
+- `slides/00-start/PITCHME.md`
+- `slides/01-basic/...`
+
+To run the slides locally:
+
+- `npm run slides`
+- `open localhost:3100`
+
++++
+
 ## `todomvc`
 
 Let us look at the application.
 
 - `npm install`
-- `npm run start:all`
+- `npm run start:all` to start the API and the Angular web app
 - `open localhost:9100`
 
 **important** keep application running through the entire workshop!
