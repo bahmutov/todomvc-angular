@@ -3,8 +3,15 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { TodoInterface } from '../../services/todo.interface';
 import { TodoStateInterface } from '../../store/todo-state.interface';
-import { selectAllCompleted, selectVisible } from '../../store/selectors/todo.selector';
-import { onCompleteAll, onRemove, onUpdate } from '../../store/actions/todo.action';
+import {
+  selectAllCompleted,
+  selectVisible
+} from '../../store/selectors/todo.selector';
+import {
+  onCompleteAll,
+  onRemove,
+  onUpdate
+} from '../../store/actions/todo.action';
 
 @Component({
   selector: 'app-list',

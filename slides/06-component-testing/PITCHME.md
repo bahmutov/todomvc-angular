@@ -351,6 +351,46 @@ cy.get('.todo').should('have.class', 'completed');
 
 ## Test the list component
 
+⌨️ finish the test "shows the items" in the spec `list.cy.ts`
+
+![List component test](./img/list-test.png)
+
++++
+
+```js
+import threeItems from '../../../../cypress/fixtures/three-items.json';
+it('shows the items', () => {
+  const store = createStore({
+    todos: threeItems,
+    filter: FILTERS.all
+  });
+  cy.mount(ListComponent, {
+    declarations: [ItemComponent],
+    imports: [StoreModule.forRoot(store)],
+    componentProperties: {
+      handleUpdate: cy.stub().as('handleUpdate')
+    }
+  });
+  threeItems.forEach((item, k) => {
+    cy.get('.todo')
+      .eq(k)
+      .should('have.text', item.title)
+      .and(
+        item.completed ? 'have.class' : 'not.have.class',
+        'completed'
+      );
+  });
+  cy.get('.todo').first().find('.toggle').check();
+  cy.get('@handleUpdate')
+    .should('have.been.calledOnce')
+    .its('firstCall.args.0', { timeout: 0 })
+    .should('deep.include', {
+      id: threeItems[0].id,
+      completed: true
+    });
+});
+```
+
 ---
 
 ## If the component makes network calls ☎️

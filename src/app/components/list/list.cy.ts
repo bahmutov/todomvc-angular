@@ -28,22 +28,5 @@ it('shows the items', () => {
   // - number
   // - text
   // - completed or not
-  threeItems.forEach((item, k) => {
-    cy.get('.todo')
-      .eq(k)
-      .should('have.text', item.title)
-      .and(
-        item.completed ? 'have.class' : 'not.have.class',
-        'completed'
-      );
-  });
   // if we complete the first item, we should get an event
-  cy.get('.todo').first().find('.toggle').check();
-  cy.get('@handleUpdate')
-    .should('have.been.calledOnce')
-    .its('firstCall.args.0', { timeout: 0 })
-    .should('deep.include', {
-      id: threeItems[0].id,
-      completed: true
-    });
 });
