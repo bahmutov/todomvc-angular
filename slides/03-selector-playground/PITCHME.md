@@ -4,12 +4,13 @@
 
 - Cypress Selector Playground tool
 - best practices for selecting elements
-- Cypress Studio for recording tests
+- ~~Cypress Studio~~ for recording tests
+- Cypress Chrome recorder
 
 +++
 
 - keep `todomvc` app running
-- open `03-selector-playground/spec.js`
+- open `03-selector-playground/spec.cy.ts`
 
 ---
 
@@ -49,16 +50,16 @@ Read [best-practices.html#Selecting-Elements](https://docs.cypress.io/guides/ref
 
 ## Todo
 
-- add test data ids to `todomvc/index.html` DOM markup
-- use new selectors to write `cypress/integration/03-selector-playground/spec.js`
+- add test data ids to the component HTML template markup
+- use new selectors to write `cypress/e2e/03-selector-playground/spec.cy.ts`
 
 ```js
 // fill the selector, maybe use "tid" function
-cy.get('...').should('have.length', 2)
+cy.get('...').should('have.length', 2);
 ```
 
 Note:
-The updated test should look something like the next image
+The updated test should look something like the next image (`data-cy`, `data-test`, etc)
 
 +++
 
@@ -66,38 +67,50 @@ The updated test should look something like the next image
 
 +++
 
-## Cypress is just JavaScript
+## 💡 Cypress is just JavaScript
 
 ```js
-import { selectors, tid } from './common-selectors'
+import { selectors, tid } from './common-selectors';
 it('finds element', () => {
-  cy.get(selectors.todoInput).type('something{enter}')
+  cy.get(selectors.todoInput).type('something{enter}');
 
   // "tid" forms "data-test-id" attribute selector
   // like "[data-test-id='item']"
-  cy.get(tid('item')).should('have.length', 1)
-})
+  cy.get(tid('item')).should('have.length', 1);
+});
 ```
 
 ---
 
-## Cypress Studio
+## 🎥 Cypress Studio
 
-Record tests by clicking on the page
+Record tests by clicking on the page, was removed in [Cypress v10](https://on.cypress.io/changelog#10-0-0).
 
-```json
-{
-  "experimentalStudio": true
-}
-```
+![open Cypress Studio](./img/start-studio.png)
 
-Watch 📹 [Record A Test Using Cypress Studio](https://www.youtube.com/watch?v=kBYtqsK-8Aw) and read [https://on.cypress.io/studio](https://on.cypress.io/studio).
+---
+
+## Chrome Cypress Recorder
+
+- Install [Cypress Chrome recorder extension](https://chrome.google.com/webstore/detail/cypress-chrome-recorder/fellcphjglholofndfmmjmheedhomgin)
 
 +++
 
-## Start recording
+![Start a new recording](./img/step1.png)
 
-![open Cypress Studio](./img/start-studio.png)
++++
+
+![Interact with the page](./img/step2.png)
+
++++
+
+![Export the recording as Cypress test](./img/step3.png)
+
++++
+
+## Todo: record a Cypress test
+
+Is the recorded test 100% done? What is it missing?
 
 ---
 
@@ -111,7 +124,6 @@ Watch 📹 [Record A Test Using Cypress Studio](https://www.youtube.com/watch?v=
 
 ## 🏁 Quickly write tests
 
-- pick elements using Selector Playground
-- record tests using Cypress Studio
+- use Chrome Recorder with Cypress test export extension
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
