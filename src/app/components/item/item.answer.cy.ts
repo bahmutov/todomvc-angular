@@ -226,5 +226,10 @@ it('yields the component and the Angular TestBed utils', () => {
         todo
       }
     }
-  ).then(console.log);
+  )
+    .then(console.log)
+    .then(({ component }) => {
+      component.todo.completed = true;
+    });
+  cy.get('.todo').should('have.class', 'completed');
 });

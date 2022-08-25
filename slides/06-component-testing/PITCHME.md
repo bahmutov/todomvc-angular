@@ -330,3 +330,43 @@ cy.mount(
 +++
 
 ![Yielded value from cy.mount](./img/yields.png)
+
++++
+
+## With great power...
+
+⌨️ extend the test "yields the component and the Angular TestBed utils"
+
+```js
+.then(console.log)
+.then(({ component }) => {
+  component.todo.completed = true;
+});
+cy.get('.todo').should('have.class', 'completed');
+```
+
+![Set completed](./img/set-completed.png)
+
+---
+
+## Test the list component
+
+---
+
+## If the component makes network calls ☎️
+
+---
+
+## 🏁 Component tests are like mini-web apps
+
+- `cy.mount(component, props)`
+- use any Cypress commands (except `cy.visit`)
+- confirm the component works
+
++++
+
+[cypress-io/cypress-component-testing-apps](https://github.com/cypress-io/cypress-component-testing-apps)
+
+![Cypress component testing apps repo](./img/apps-repo.png)
+
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
