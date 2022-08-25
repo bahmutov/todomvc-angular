@@ -84,7 +84,7 @@ it('finds element', () => {
 
 ## 🎥 Cypress Studio
 
-Record tests by clicking on the page, was removed in [Cypress v10](https://on.cypress.io/changelog#10-0-0).
+Record tests by clicking on the page, was removed in [Cypress v10](https://on.cypress.io/changelog#10-0-0) 😭.
 
 ![open Cypress Studio](./img/start-studio.png)
 
@@ -93,6 +93,8 @@ Record tests by clicking on the page, was removed in [Cypress v10](https://on.cy
 ## Chrome Cypress Recorder
 
 - Install [Cypress Chrome recorder extension](https://chrome.google.com/webstore/detail/cypress-chrome-recorder/fellcphjglholofndfmmjmheedhomgin)
+
+![Cypress Chrome Recorder extension](./img/extension.png)
 
 +++
 

@@ -318,6 +318,24 @@ it('handles 404 when loading todos', () => {
   );
 });
 
+it('shows loading element', () => {
+  // delay XHR to "/todos" by a few seconds
+  // and respond with an empty list
+  // https://on.cypress.io/intercept
+  cy.intercept('GET', '/todos', {
+    delay: 2000,
+    body: []
+  }).as('todos');
+  cy.visit('/');
+  // shows Loading element
+  cy.get('.loading').should('be.visible');
+  // wait for the network call to complete
+  // https://on.cypress.io/wait
+  cy.wait('@todos');
+  // now the Loading element should go away
+  cy.get('.loading').should('not.exist');
+});
+
 it('handles todos with blank title', () => {
   cy.intercept('GET', '/todos', [
     {

@@ -23,9 +23,9 @@
 
 ```javascript
 it('starts with zero items', () => {
-  cy.visit('/')
-  cy.get('li.todo').should('have.length', 0)
-})
+  cy.visit('/');
+  cy.get('li.todo').should('have.length', 0);
+});
 ```
 
 ![Should have failed](./img/test-passes-but-this-is-wrong.png)
@@ -49,10 +49,10 @@ it('starts with zero items', () => {
 ```javascript
 // 05-xhr/spec.js
 it('starts with zero items (waits)', () => {
-  cy.visit('/')
-  cy.wait(1000)
-  cy.get('li.todo').should('have.length', 0)
-})
+  cy.visit('/');
+  cy.wait(1000);
+  cy.get('li.todo').should('have.length', 0);
+});
 ```
 
 ![Waiting works](./img/waiting.png)
@@ -105,11 +105,11 @@ Use the test "starts with zero items" in the file `05-xhr/spec.js`
 💡 No need to `cy.wait(...).then(...)`. All Cypress commands will be chained automatically.
 
 ```js
-cy.intercept('GET', '/todos').as('todos')
-cy.visit('/')
-cy.wait('@todos')
+cy.intercept('GET', '/todos').as('todos');
+cy.visit('/');
+cy.wait('@todos');
 // cy.get() will run AFTER cy.wait() finishes
-cy.get('li.todo').should('have.length', 0)
+cy.get('li.todo').should('have.length', 0);
 ```
 
 Read [Introduction to Cypress](https://on.cypress.io/introduction-to-cypress) "Commands Run Serially"
@@ -151,7 +151,7 @@ Update test "starts with zero items (stubbed response)"
 ```javascript
 // returns an empty list
 // when `GET /todos` is requested
-cy.intercept('GET', '/todos', [])
+cy.intercept('GET', '/todos', []);
 ```
 
 +++
@@ -161,11 +161,11 @@ it('starts with zero items (fixture)', () => {
   // stub `GET /todos` with fixture "empty-list"
 
   // visit the page
-  cy.visit('/')
+  cy.visit('/');
 
   // then check the DOM
-  cy.get('li.todo').should('have.length', 0)
-})
+  cy.get('li.todo').should('have.length', 0);
+});
 ```
 
 **tip:** use [`cy.fixture`](https://on.cypress.io/fixture) command
@@ -176,10 +176,10 @@ it('starts with zero items (fixture)', () => {
 it('loads several items from a fixture', () => {
   // stub route `GET /todos` with data from a fixture file "two-items.json"
   // THEN visit the page
-  cy.visit('/')
+  cy.visit('/');
   // then check the DOM: some items should be marked completed
   // we can do this in a variety of ways
-})
+});
 ```
 
 ---
@@ -249,7 +249,11 @@ Network requests guide at [https://on.cypress.io/network-requests](https://on.cy
 In the application we are showing (very quickly) "Loading" state
 
 ```html
-<div class="loading" v-show="loading">Loading data ...</div>
+<div *ngIf="loading" class="loading-container">
+  <div class="loading" v-show="loading">
+    Loading data ...
+  </div>
+</div>
 ```
 
 +++
@@ -262,7 +266,7 @@ In the application we are showing (very quickly) "Loading" state
 
 ⌨️ test "shows loading element"
 
-**Note:** most querying commands have the built-in `should('exist')` assertion, thus in this case we need to use `should('be.visible')` and `should('not.be.visible')` assertions.
+**Note:** most querying commands have the built-in `should('exist')` assertion, thus in this case we need to use `should('be.visible')` and `should('not.exist')` assertions.
 
 ---
 
@@ -272,12 +276,12 @@ In the application we are showing (very quickly) "Loading" state
 // cypress/integration/05-xhr/spec.js
 // can you fix this test?
 it.skip('confirms the right Todo item is sent to the server', () => {
-  const id = cy.wait('@postTodo').then((intercept) => {
+  const id = cy.wait('@postTodo').then(intercept => {
     // assert the response fields
-    return intercept.response.body.id
-  })
-  console.log(id)
-})
+    return intercept.response.body.id;
+  });
+  console.log(id);
+});
 ```
 
 ⌨️ test "refactor example"
@@ -299,8 +303,8 @@ The application loads Todos every minute
 ```js
 // how would you test the periodic loading of todos?
 setInterval(() => {
-  this.$store.dispatch('loadTodos')
-}, 60000)
+  this.$store.dispatch('loadTodos');
+}, 60000);
 ```
 
 +++

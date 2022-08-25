@@ -179,8 +179,10 @@ it('handles 404 when loading todos', () => {
 it('shows loading element', () => {
   // delay XHR to "/todos" by a few seconds
   // and respond with an empty list
+  // https://on.cypress.io/intercept
   // shows Loading element
   // wait for the network call to complete
+  // https://on.cypress.io/wait
   // now the Loading element should go away
 });
 

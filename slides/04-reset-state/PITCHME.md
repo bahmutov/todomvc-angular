@@ -10,7 +10,8 @@
 ## The problem
 
 - keep `todomvc` app running
-- open `cypress/integration/04-reset-state/spec.js`
+- open `cypress/e2e/04-reset-state/spec.cy.ts`
+- run the test "adds two items" only
 - if you reload the test it starts failing 😕
 
 +++
@@ -28,18 +29,18 @@
 ---
 
 ```javascript
-// cypress/integration/04-reset-state/spec.js
+// 04-reset-state/spec.cy.ts
 beforeEach(() => {
-  cy.visit('/')
-})
-const addItem = (text) => {
-  cy.get('.new-todo').type(`${text}{enter}`)
-}
+  cy.visit('/');
+});
+const addItem = text => {
+  cy.get('.new-todo').type(`${text}{enter}`);
+};
 it('adds two items', () => {
-  addItem('first item')
-  addItem('second item')
-  cy.get('li.todo').should('have.length', 2)
-})
+  addItem('first item');
+  addItem('second item');
+  cy.get('li.todo').should('have.length', 2);
+});
 ```
 
 +++
@@ -57,6 +58,7 @@ See the example test in the spec file, it is complicated.
 ## Questions
 
 - how to reset the database?
+  - the REST api is running at port 3000
   - **tip** we are using [json-server-reset](https://github.com/bahmutov/json-server-reset#readme) middleware
   - try to reset it from command line
 
@@ -69,13 +71,21 @@ $ http POST :3000/reset todos:=[]
 
 - how to make an arbitrary cross-domain XHR request from Cypress?
 - reset the database before each test
-  - modify `04-reset-state/spec.js` to make XHR call to reset the database
+  - modify `04-reset-state/spec.cy.ts` to make XHR call to reset the database
   - before or after `cy.visit`?
 
 Note:
-Students should modify `cypress/integration/04-reset-state/spec.js` and make the request to reset the database before each test using `cy.request`.
+Students should modify `cypress/integration/04-reset-state/spec.cy.ts` and make the request to reset the database before each test using `cy.request`.
 
-The answer to this and other TODO assignments are in [cypress/integration/04-reset-state/answer.js](/cypress/integration/04-reset-state/answer.js) file.
+The answer to this and other TODO assignments are in `cypress/e2e/04-reset-state/answer.cy.ts` file.
+
++++
+
+## 📈 Improve the test
+
+Todo: move the API url to the `cypress.config.ts` file "e2e" block
+
+Read 📝 "Cypress v10 Environment Variables" [glebbahmutov.com/blog/cypress-v10-env/](https://glebbahmutov.com/blog/cypress-v10-env/)
 
 ---
 
@@ -85,7 +95,7 @@ The answer to this and other TODO assignments are in [cypress/integration/04-res
 "start": "json-server --static . --watch data.json"
 ```
 
-If we overwrite `todomvc/data.json` and reload the web app we should see new data
+If we overwrite `data.json` and reload the web app we should see new data
 
 +++
 
@@ -94,7 +104,7 @@ If we overwrite `todomvc/data.json` and reload the web app we should see new dat
 ```js
 describe('reset data using cy.writeFile', () => {
   beforeEach(() => {
-    // TODO write file "todomvc/data.json" with stringified todos object
+    // TODO write file "data.json" with stringified todos object
     cy.visit('/')
   })
   ...
@@ -118,24 +128,24 @@ Most common mistake is using file path relative to the spec file, should be rela
 You can execute Node code during browser tests by calling [`cy.task`](https://on.cypress.io/task)
 
 ```js
-// cypress/plugins/index.js
-module.exports = (on, config) => {
+// cypress.config.ts
+setupNodeEvents(on, config) {
   on('task', {
     hello(name) {
-      console.log('Hello', name)
-      return null // or Promise
+      console.log('Hello', name);
+      return null; // or Promise
     }
-  })
-}
-// cypress/integration/spec.js
-cy.task('hello', 'World')
+  });
+};
+// spec.cy.ts
+cy.task<result type>('hello', 'World');
 ```
 
 +++
 
 ## TODO reset data using cy.task
 
-Find "resetData" task in cypress/plugins/index.js
+Find "resetData" task in `cypress.config.ts` file
 
 ```js
 describe('reset data using a task', () => {
@@ -143,9 +153,9 @@ describe('reset data using a task', () => {
     // call the task "resetData"
     // https://on.cypress.io/task
     // cy.task("resetData", ...)
-    cy.visit('/')
-  })
-})
+    cy.visit('/');
+  });
+});
 ```
 
 +++
@@ -156,10 +166,10 @@ Pass an object when calling `cy.task('resetData')`
 
 ```js
 it('sets data to complex object right away', () => {
-  cy.task('resetData' /* object*/)
-  cy.visit('/')
+  cy.task('resetData' /* object*/);
+  cy.visit('/');
   // check what is rendered
-})
+});
 ```
 
 +++
@@ -174,9 +184,9 @@ it('sets data using fixture', () => {
   // https://on.cypress.io/fixture
   // and then call the task to set todos
   // https://on.cypress.io/task
-  cy.visit('/')
+  cy.visit('/');
   // check what is rendered
-})
+});
 ```
 
 ---
@@ -186,13 +196,13 @@ it('sets data using fixture', () => {
 Using the `experimentalInteractiveRunEvents` flag
 
 ```js
-// cypress/plugins/index.js
-module.exports = (on, config) => {
-  on('before:spec', (spec) => {
-    console.log('resetting DB before spec %s', spec.name)
-    resetData()
-  })
-}
+// cypress.config.ts
+setupNodeEvents(on, config) {
+  on('before:spec', spec => {
+    console.log('resetting DB before spec %s', spec.name);
+    resetData();
+  });
+};
 ```
 
 **Warning:** as of Cypress v7 only available in `cypress run` mode. See [https://on.cypress.io/before-spec-api](https://on.cypress.io/before-spec-api) for details.

@@ -7,6 +7,20 @@ const addItem = text => {
   cy.get('.new-todo').type(`${text}{enter}`);
 };
 
+describe.only('reset data using XHR call', () => {
+  beforeEach(() => {
+    // REST api should be running at port 3000
+    // TODO call <API url>/reset endpoint with POST method and object {todos: []}
+    cy.visit('/');
+  });
+
+  it('adds two items', () => {
+    addItem('first item');
+    addItem('second item');
+    cy.get('li.todo').should('have.length', 2);
+  });
+});
+
 describe('ANTI-PATTERN: reset state through the UI', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -49,22 +63,9 @@ describe('ANTI-PATTERN: reset state through the UI', () => {
   });
 });
 
-describe('reset data using XHR call', () => {
-  beforeEach(() => {
-    // application should be running at port 3000
-    // and the "localhost:3000" is set as "baseUrl" in "cypress.json"
-    // TODO call <API url>/reset endpoint with POST method and object {todos: []}
-    cy.visit('/');
-  });
-
-  it('adds two items', () => {
-    addItem('first item');
-    addItem('second item');
-    cy.get('li.todo').should('have.length', 2);
-  });
-});
-
-describe('reset data using cy.writeFile', () => {
+// not recommended, as it might cause problems
+// for the json-server watching the file
+describe.skip('reset data using cy.writeFile', () => {
   beforeEach(() => {
     // TODO write file "todomvc/data.json" with stringified todos object
     // file path is relative to the project's root folder
@@ -92,7 +93,7 @@ describe('reset data using a task', () => {
   });
 });
 
-describe('set initial data', () => {
+describe('set the initial data', () => {
   it('sets data to complex object right away', () => {
     // TODO call task and pass an object with todos
     cy.visit('/');
@@ -136,7 +137,9 @@ describe('create todos using API', () => {
   });
 });
 
-describe('routing', () => {
+// Implement routing in the app
+// while running E2E tests
+describe.skip('routing', () => {
   beforeEach(() => {
     // reset the app to have a few todos
     // load the fixture "three-items.json" using cy.fixture command

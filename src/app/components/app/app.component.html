@@ -1,8 +1,15 @@
 <div id="app" [ngClass]="{ loaded }">
   <section class="todoapp">
     <app-header></app-header>
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading" v-show="loading">
+        Loading data ...
+      </div>
+    </div>
     <app-list *ngIf="(todos$ | async).length"></app-list>
-    <app-footer *ngIf="(todos$ | async).length"></app-footer>
+    <app-footer
+      *ngIf="(todos$ | async).length"
+    ></app-footer>
   </section>
   <app-copy-right></app-copy-right>
 </div>
