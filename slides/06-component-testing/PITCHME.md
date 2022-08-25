@@ -46,3 +46,29 @@ Component tests live close to their components in the "src" folder
 ## 💡 Quickly switch the testing type
 
 ![Switch between E2E and component tests](./img/switch.png)
+
+---
+
+## First Item component test
+
+Spec file `src/app/components/item/item.cy.ts`
+
+⌨️ Implement the test "mounts the component"
+
+```js
+import { ItemComponent } from './item.component';
+it('mounts the component', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code',
+    completed: false
+  };
+  // use cy.mount command from
+  // cypress/support/component.ts
+  // to mount the ItemComponent
+  // with options componentProperties { todo }
+  // confirm the page contains ".todo"
+  // with text todo.title
+  // and it is incomplete
+});
+```

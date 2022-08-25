@@ -219,7 +219,7 @@ describe.skip('bonus tests', () => {
     // make sure the application has saved the item
     cy.wait(1000);
     // get the saved todos using cy.task from the plugins file
-    cy.task('getSavedTodos')
+    cy.task<any[]>('getSavedTodos')
       .should('have.length.greaterThan', 0)
       // confirm the list includes an item with "title: randomLabel"
       .and(list => {
