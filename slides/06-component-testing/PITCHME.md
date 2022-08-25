@@ -395,6 +395,12 @@ it('shows the items', () => {
 
 ## If the component makes network calls ☎️
 
+⌨️ finish the test "shows the items" in `app.cy.ts` spec file
+
++++
+
+![App spec](./img/app.png)
+
 ---
 
 ## 🏁 Component tests are like mini-web apps
