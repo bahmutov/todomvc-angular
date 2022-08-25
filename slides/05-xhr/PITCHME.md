@@ -9,8 +9,8 @@
 +++
 
 - keep `todomvc` app running
-- open `cypress/integration/05-xhr/spec.js`
-- `cy.route` is deprecated, use `cy.intercept`
+- open `05-xhr/spec.cy.ts`
+- use the `cy.intercept` command
 
 📖 Fun read: [Cypress Network Requests Guide](https://on.cypress.io/network-requests) and [https://glebbahmutov.com/blog/cypress-intercept-problems/](https://glebbahmutov.com/blog/cypress-intercept-problems/)
 
@@ -47,7 +47,7 @@ it('starts with zero items', () => {
 ## Waiting
 
 ```javascript
-// 05-xhr/spec.js
+// 05-xhr/spec.cy.ts
 it('starts with zero items (waits)', () => {
   cy.visit('/');
   cy.wait(1000);
@@ -68,19 +68,35 @@ There might be multiple delays: loading the page, fetching todos, rendering data
 ## Wait for application signal
 
 ```js
-// todomvc/app.js
-axios.get('/todos')
-  ...
+// app.component.ts
+TodoRestService.loadTodos()
+  .then(todos => {
+    this.loaded = true;
+  })
   .finally(() => {
     // an easy way for the application to signal
     // that it is done loading
-    document.body.classList.add('loaded')
-  })
+    this.loaded = true;
+  });
 ```
+
+```html
+<div id="app" [ngClass]="{ loaded }"></div>
+```
+
++++
 
 **TODO:** write a test that waits for the body to have class "loaded" after the visit
 
-⌨️ test "starts with zero items (check body.loaded)"
+⌨️ test "starts with zero items (check loaded class)"
+
+```html
+<div id="app" [ngClass]="{ loaded }"></div>
+```
+
++++
+
+Does your test still work if the application takes 2 seconds to start loading the todos?
 
 +++
 
@@ -90,7 +106,7 @@ axios.get('/todos')
 
 ### Todo
 
-Use the test "starts with zero items" in the file `05-xhr/spec.js`
+Use the test "starts with zero items" in the file `05-xhr/spec.cy.ts`
 
 - spy on specific route with "cy.intercept" <!-- .element: class="fragment" -->
   - should we set the spy _before_ or _after_ `cy.visit`?
@@ -337,5 +353,6 @@ You can spy on every network request and keep track of its timestamp. Waiting fo
 
 - confirm the REST calls
 - stub random data
+- learn more by taking the course "Cypress Network Testing Exercises" [cypress.tips/courses/network-testing](https://cypress.tips/courses/network-testing)
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)

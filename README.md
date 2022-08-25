@@ -18,3 +18,7 @@ Retry-ability and flake prevention | [08-retry-ability](slides/08-retry-ability/
 Custom commands | [09-custom-commands](slides/09-custom-commands/PITCHME.md) | [link](http://localhost:3100/?p=09-custom-commands)
 The end | [end](slides/end/PITCHME.md) | [link](http://localhost:3100/?p=end)
 <!-- prettier-ignore-end -->
+
+## Small print
+
+This repo was forked from [vuesomedev/todomvc-angular](https://github.com/vuesomedev/todomvc-angular)

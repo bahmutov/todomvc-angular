@@ -41,6 +41,22 @@ Create a new folder
 
 ![Change in dev dependencies](./img/deps-change.png)
 
++++
+
+## 🤣🤣🤣🤣🤣🤣
+
+![Commit says e2e testing is a lost cause with Protractor](./img/broken.png)
+
+`todomvc-angular` was forked from [vuesomedev/todomvc-angular](https://github.com/vuesomedev/todomvc-angular)
+
+---
+
+## Migrator 👑
+
+![Migrator translates Protractor tests to Cypress](./img/migrator.png)
+
+[migrator.cypress.io](https://migrator.cypress.io/)
+
 ---
 
 ### Cypress bin
