@@ -8,6 +8,9 @@
 // @ts-ignore
 import threeTodos from '../../fixtures/three-items.json';
 
+// Tip: fully print objects in the assertions messages
+chai.config.truncateThreshold = 300;
+
 const api = Cypress.env('api');
 expect(api, 'api url').to.be.a('string');
 
@@ -125,10 +128,10 @@ it('starts with zero items (delay plus render delay)', () => {
   cy.get('li.todo').should('have.length', 0);
 });
 
-it('starts with zero items (check app.loaded class)', () => {
+it('starts with zero items (check loaded class)', () => {
   // cy.visit('/')
-  // or use delays to simulate the delayed load and render
-  cy.visit('/?delay=2000&renderDelay=1500');
+  // or use delays to simulate the delayed load
+  cy.visit('/?delay=2000');
   // the application sets "loaded" class on the body
   // in the test we can check for this class.
   // Increase the command timeout to prevent flaky tests
@@ -140,7 +143,7 @@ it('starts with zero items (check app.loaded class)', () => {
   cy.get('li.todo').should('have.length', 0);
 });
 
-it('starts with zero items (check the window)', () => {
+it('starts with zero items (check the window property)', () => {
   // use delays to simulate the delayed load and render
   cy.visit('/?delay=2000&renderDelay=1500');
   // the application code sets the "window.todos"
@@ -153,7 +156,9 @@ it('starts with zero items (check the window)', () => {
   // object has property "todos"
   // https://on.cypress.io/window
   // https://on.cypress.io/its
-  cy.window().its('todos', { timeout: 7_000 });
+  // cy.window().its('todos', { timeout: 7_000 });
+  // Alternative check
+  cy.window().should('have.property', 'todos');
   // then check the number of items rendered on the page
   cy.get('li.todo').should('have.length', 0);
 });
@@ -354,6 +359,47 @@ it('handles todos with blank title', () => {
     .should('have.text', '  ');
 });
 
+it.only('can rewrite HTML and CSS', () => {
+  // intercept "GET /" request for the HTML document
+  // let the request continue to the server
+  // when it gets the response, change something in the body
+  // of the response which is the HTML text
+  cy.intercept('GET', '/', req => {
+    req.continue(res => {
+      res.body = res.body.replace(
+        '<app-root></app-root>',
+        '<div class="test-message">This is a test</div><app-root></app-root>'
+      );
+    });
+  }).as('html');
+  // intercept the "GET styles.css" request
+  // and add more classes to the returned CSS
+  cy.intercept('GET', 'styles.css', req => {
+    delete req.headers['If-None-Match'];
+    req.continue(res => {
+      delete res.headers.etag;
+      res.body += `.test-message {
+        color: #f0f;
+        font-weight: bold;
+        font-size: 78pt;
+        position: absolute;
+        left: 200px;
+        top: 600px;
+        z-index: 1000;
+        width: 100%;
+        transform: rotate(-45deg);
+      }`;
+    });
+  }).as('css');
+  // visit the page and confirm the HTML and the CSS
+  // were intercepted successfully
+  cy.visit('/');
+  cy.wait('@html');
+  cy.wait('@css');
+  // confirm the changed HTML is present on the page
+  cy.contains('This is a test');
+});
+
 // a test that confirms a specific network call is NOT made
 // until the application adds a new item
 it('does not make POST /todos request on load', () => {
@@ -421,4 +467,37 @@ describe('spying on load', () => {
         );
       });
   });
+});
+
+describe('refactor example', () => {
+  it('confirms the right Todo item is sent to the server', () => {
+    cy.intercept('GET', '/todos', []).as('todos');
+    cy.visit('/');
+    cy.intercept('POST', '/todos').as('postTodo');
+    const title = 'new todo';
+    const completed = false;
+    cy.get('.new-todo').type(title + '{enter}');
+    cy.wait('@postTodo')
+      .its('response', { timeout: 0 })
+      // using the assertion "deep.include"
+      // instead of "have.property" to avoid
+      // changing the subject value
+      .should('deep.include', { statusCode: 201 })
+      .its('body')
+      .should('deep.include', { title, completed })
+      .its('id')
+      .then(id => {
+        cy.log(`new item id: ${id}`);
+        cy.request(api + '/todos/' + id)
+          .its('body')
+          .should('deep.equal', {
+            id,
+            title,
+            completed
+          });
+      });
+  });
+
+  // Bonus: want even better assertions? use cy-spok
+  // https://github.com/bahmutov/cy-spok
 });

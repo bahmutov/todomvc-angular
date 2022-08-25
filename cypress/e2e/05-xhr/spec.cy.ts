@@ -9,7 +9,7 @@
 
 /* eslint-disable no-unused-vars */
 
-it('starts with zero items (waits)', () => {
+it.only('starts with zero items (waits)', () => {
   cy.visit('/');
   // wait 1 second
   // then check the number of items
@@ -18,11 +18,13 @@ it('starts with zero items (waits)', () => {
 
 it('starts with zero items (network wait)', () => {
   // spy on route `GET /todos`
-  //  with cy.intercept(...).as(<alias name>)
+  // with cy.intercept(...).as(<alias name>)
+  // https://on.cypress.io/intercept
   // THEN visit the page
   cy.visit('/');
   // wait for `GET /todos` route
-  //  using "@<alias name>" string
+  // using "@<alias name>" string
+  // https://on.cypress.io/wait
   // then check the DOM
   cy.get('li.todo').should('have.length', 0);
 });
@@ -48,17 +50,17 @@ it('starts with zero items (delay plus render delay)', () => {
   // AFTER you have checked?
 });
 
-it('starts with zero items (check body.loaded)', () => {
+it('starts with zero items (check loaded class)', () => {
   // cy.visit('/')
-  // or use delays to simulate the delayed load and render
-  cy.visit('/?delay=2000&renderDelay=1500');
+  // or use delays to simulate the delayed load
+  cy.visit('/?delay=2000');
   // the application sets "loaded" class on the body
   // in the test we can check for this class
   // THEN check the number of items
   cy.get('li.todo').should('have.length', 0);
 });
 
-it('starts with zero items (check the window)', () => {
+it('starts with zero items (check the window property)', () => {
   // use delays to simulate the delayed load and render
   cy.visit('/?delay=2000&renderDelay=1500');
   // the application code sets the "window.todos"
@@ -293,6 +295,9 @@ describe('refactor example', () => {
     console.log(id);
     cy.request('/todos/' + id); // validate the response
   });
+
+  // Bonus: want even better assertions? use cy-spok
+  // https://github.com/bahmutov/cy-spok
 });
 
 describe('visit non-html page', () => {

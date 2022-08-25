@@ -24,26 +24,33 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;
+    const uri = window.location.search.substring(1);
+    const params = new URLSearchParams(uri);
+    const delay = parseFloat(params.get('delay') || '0');
+    console.log('load delay is %d', delay);
 
-    TodoRestService.loadTodos()
-      .then(todos => {
-        this.loaded = true;
-        this.store.dispatch(onLoad(todos));
+    setTimeout(() => {
+      this.loading = true;
 
-        // @ts-ignore
-        if (window.Cypress) {
+      TodoRestService.loadTodos()
+        .then(todos => {
+          this.loaded = true;
+          this.store.dispatch(onLoad(todos));
+
           // @ts-ignore
-          window.todos = todos;
-        }
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+          if (window.Cypress) {
+            // @ts-ignore
+            window.todos = todos;
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
 
-    // this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
-    this.todos$.subscribe(todos =>
-      TodoLocalService.storeTodos(todos)
-    );
+      // this.store.dispatch(onLoad(TodoLocalService.loadTodos()));
+      this.todos$.subscribe(todos =>
+        TodoLocalService.storeTodos(todos)
+      );
+    }, delay);
   }
 }

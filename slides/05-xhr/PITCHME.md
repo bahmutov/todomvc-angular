@@ -86,7 +86,7 @@ TodoRestService.loadTodos()
 
 +++
 
-**TODO:** write a test that waits for the body to have class "loaded" after the visit
+**TODO:** write a test that waits for the app element to have class "loaded" after the visit
 
 ⌨️ test "starts with zero items (check loaded class)"
 
@@ -96,7 +96,11 @@ TodoRestService.loadTodos()
 
 +++
 
-Does your test still work if the application takes 2 seconds to start loading the todos?
+Does your test still work if the application takes 5 seconds to start loading the todos?
+
+```js
+cy.visit('/?delay=5000');
+```
 
 +++
 
@@ -149,8 +153,8 @@ There are multiple tests in the "spec.js" that you can go through
 
 - 'starts with zero items (delay)'
 - 'starts with zero items (delay plus render delay)'
-- 'starts with zero items (check body.loaded)'
-- 'starts with zero items (check the window)'
+- 'starts with zero items (check loaded class)'
+- 'starts with zero items (check the window property)'
 - 'starts with N items'
 - 'starts with N items and checks the page'
 
@@ -198,6 +202,8 @@ it('loads several items from a fixture', () => {
 });
 ```
 
+**Bonus:** import the JSON fixture directly into the spec file for simplicity
+
 ---
 
 ### Spying on adding an item network call
@@ -229,7 +235,7 @@ see instructions in the `05-xhr/spec.js` for the test
 ![Post new item response](./img/post-item-response.png)
 
 Note:
-see instructions in the `05-xhr/spec.js` for the test
+see instructions in the `05-xhr/spec.cy.ts` for the test
 
 +++
 
@@ -240,13 +246,15 @@ see instructions in the `05-xhr/spec.js` for the test
 ![Post new item response](./img/post-item-response.png)
 
 Note:
-see instructions in the `05-xhr/spec.js` for the test
+see instructions in the `05-xhr/spec.cy.ts` for the test
 
 ---
 
-## Bonus
+## Bonus materials 📚
 
-Network requests guide at [https://on.cypress.io/network-requests](https://on.cypress.io/network-requests), blog post [https://glebbahmutov.com/blog/network-requests-with-cypress/](https://glebbahmutov.com/blog/network-requests-with-cypress/)
+- Network requests guide at [https://on.cypress.io/network-requests](https://on.cypress.io/network-requests)
+- blog post [https://glebbahmutov.com/blog/network-requests-with-cypress/](https://glebbahmutov.com/blog/network-requests-with-cypress/)
+- "Cypress Network Testing Exercises" [cypress.tips/courses/network-testing](https://cypress.tips/courses/network-testing) course.
 
 **Question:** which requests do you spy on, which do you stub?
 
@@ -289,7 +297,7 @@ In the application we are showing (very quickly) "Loading" state
 ## Refactor a failing test
 
 ```js
-// cypress/integration/05-xhr/spec.js
+// 05-xhr/spec.cy.ts
 // can you fix this test?
 it.skip('confirms the right Todo item is sent to the server', () => {
   const id = cy.wait('@postTodo').then(intercept => {
@@ -302,13 +310,44 @@ it.skip('confirms the right Todo item is sent to the server', () => {
 
 ⌨️ test "refactor example"
 
++++
+
+## Even better assertions: cy-spok
+
+```js
+cy.wait('@postTodo')
+  .its('response')
+  .should(
+    spok({
+      statusCode: 201,
+      body: {
+        title,
+        completed,
+        id: spok.string
+      }
+    })
+  )
+  .its('body.id')
+  .then(cy.log);
+```
+
+- [cy-spok plugin](https://github.com/bahmutov/cy-spok) and [glebbahmutov.com/blog/network-requests-with-cypress/](https://glebbahmutov.com/blog/network-requests-with-cypress/)
+
 ---
 
-## Let's test an edge data case
+### Let's test an edge data case
 
-User cannot enter blank titles. What if our database has old data records with blank titles which it returns on load? Does the application show them? Does it crash?
+User cannot enter blank titles. What if our database has old data records with blank titles which it returns on load? Does the application show them? Does it crash? **Todo:** write the test `handles todos with blank title`
 
-**Todo:** write the test `handles todos with blank title`
+![Test with a blank todo text](./img/blank.png)
+
+---
+
+## Anything can be intercepted
+
+⌨️ test "can rewrite HTML and CSS"
+
+![A fun test add elements to the page](./img/rewrite-html-css.png)
 
 ---
 
