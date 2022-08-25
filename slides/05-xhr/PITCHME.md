@@ -357,9 +357,8 @@ The application loads Todos every minute
 
 ```js
 // how would you test the periodic loading of todos?
-setInterval(() => {
-  this.$store.dispatch('loadTodos');
-}, 60000);
+setTimeout(loadTodos, delay);
+setInterval(loadTodos, 60_000);
 ```
 
 +++
@@ -378,9 +377,13 @@ setInterval(() => {
 
 ⌨️ test "test periodic loading"
 
++++
+
+![This fast test makes the app think 3 minutes have passed](./img/every-minute.png)
+
 ---
 
-## Wait for Network Idle
+## Wait for Network Idle (advanced)
 
 You can spy on every network request and keep track of its timestamp. Waiting for network idle means waiting for the network request to be older than N milliseconds before continuing the test.
 

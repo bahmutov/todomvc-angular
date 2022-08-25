@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     const delay = parseFloat(params.get('delay') || '0');
     console.log('load delay is %d', delay);
 
-    setTimeout(() => {
+    const loadTodos = () => {
       this.loading = true;
 
       TodoRestService.loadTodos()
@@ -51,6 +51,9 @@ export class AppComponent implements OnInit {
       this.todos$.subscribe(todos =>
         TodoLocalService.storeTodos(todos)
       );
-    }, delay);
+    };
+
+    setTimeout(loadTodos, delay);
+    setInterval(loadTodos, 60_000);
   }
 }

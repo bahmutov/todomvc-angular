@@ -312,6 +312,20 @@ describe('visit non-html page', () => {
   });
 });
 
+it('can rewrite HTML and CSS', () => {
+  // intercept "GET /" request for the HTML document
+  // let the request continue to the server
+  // when it gets the response, change something in the body
+  // of the response which is the HTML text
+  //
+  // intercept the "GET styles.css" request
+  // and add more classes to the returned CSS
+  //
+  // visit the page and confirm the HTML and the CSS
+  // were intercepted successfully
+  // confirm the changed HTML is present on the page
+});
+
 describe('test periodic loading', () => {
   // application periodically loads todos from the server
   // we do not want to wait 1 minute for the load call
