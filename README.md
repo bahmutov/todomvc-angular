@@ -1,5 +1,28 @@
 # TodoMVC Testing Using ![cypress version](https://img.shields.io/badge/cypress-10.6.0-brightgreen)
 
+## Install
+
+To install the dependencies and run these tests, need at least Node v14+
+
+```
+$ npm i
+```
+
+Check that the application and the API starts
+
+```
+$ npm run start:all
+$ open localhost:9100
+```
+
+![Application](./slides/intro/img/todomvc.png)
+
+Check if Cypress v10 opens
+
+```
+$ npx cypress open
+```
+
 ## Contents
 
 <!-- prettier-ignore-start -->

@@ -57,6 +57,7 @@ Spec file `src/app/components/item/item.cy.ts`
 
 ```js
 import { ItemComponent } from './item.component';
+// https://on.cypress.io/component-testing/mounting-angular
 it('mounts the component', () => {
   const todo = {
     id: '101',
@@ -102,3 +103,6 @@ it('mounts the template', () => {
 How does the app apply its CSS? Can you make the template HTML in the test "shows an item with style" match it?
 
 ![Test with the DOM structure matching CSS](./img/style.png)
+
+Note:
+Show the devtools and how "src/styles.css" is fetched - because it comes via angular.json file automatically read by the Cypress dev server.

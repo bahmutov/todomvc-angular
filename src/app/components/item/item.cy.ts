@@ -1,5 +1,7 @@
 import { ItemComponent } from './item.component';
 
+// https://on.cypress.io/component-testing/mounting-angular
+
 it('mounts the component', () => {
   const todo = {
     id: '101',
