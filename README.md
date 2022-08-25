@@ -2,13 +2,22 @@
 
 ## Install
 
-To install the dependencies and run these tests, need at least Node v14+
+You will need to clone this repository to your local machine and install its dependencies using Node + NPM. To install the dependencies and run these tests, need at least Node v14+.
+
+First, clone this repo to your local machine
+
+```
+$ git clone git@github.com:bahmutov/todomvc-angular.git
+$ cd todomvc-angular
+```
+
+Next install the NPM dependencies
 
 ```
 $ npm i
 ```
 
-Check that the application and the API starts
+Check that the application and the API start
 
 ```
 $ npm run start:all
@@ -22,6 +31,10 @@ Check if Cypress v10 opens
 ```
 $ npx cypress open
 ```
+
+You should see something like this:
+
+![Cypress open](./slides/intro/img/cy-open.png)
 
 ## Contents
 
