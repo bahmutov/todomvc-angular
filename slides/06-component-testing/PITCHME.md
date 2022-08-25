@@ -401,6 +401,83 @@ it('shows the items', () => {
 
 ![App spec](./img/app.png)
 
++++
+
+```js
+it('shows the items', { viewportHeight: 700 }, () => {
+  const store = createStore({
+    todos: [],
+    filter: FILTERS.all
+  });
+
+  cy.intercept('GET', '/todos', {
+    fixture: 'three-items.json'
+  }).as('todos');
+
+  cy.mount(AppComponent, {
+    declarations: [
+      HeaderComponent,
+      ListComponent,
+      ItemComponent,
+      CopyRightComponent,
+      FooterComponent
+    ],
+    imports: [StoreModule.forRoot(store)]
+  });
+  cy.wait('@todos');
+  cy.intercept('POST', '/todos', {}).as('new-todo');
+  cy.get('.new-todo').type('clean up{enter}');
+  cy.get('.todo').should('have.length', 4);
+  cy.wait('@new-todo')
+    .its('request.body')
+    .should('deep.include', {
+      title: 'clean up',
+      completed: false
+    });
+});
+```
+
++++
+
+## Control the ~~destiny~~ randomness
+
+```js
+cy.wait('@new-todo')
+  .its('request.body')
+  .should('deep.include', {
+    title: 'clean up',
+    completed: false
+  });
+```
+
+Why don't we know the `id` property?
+
++++
+
+## Stub Math.random
+
+Application gets its item id like this:
+
+```js
+function randomId() {
+  return Math.random().toString().substr(2, 10);
+}
+```
+
+We can control the `Math.random` method from the test "controls the new item ID"
+
+```js
+cy.stub(window.Math, 'random').returns(0.123);
+// Tip: in an end-to-end test we need to use cy.window first
+cy.window().then(win => {
+  cy.stub(win.Math, 'random').returns(0.123);
+});
+```
+
++++
+
+![Stub Math.random test](./img/stub.png)
+
 ---
 
 ## 🏁 Component tests are like mini-web apps
