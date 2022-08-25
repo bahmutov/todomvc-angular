@@ -260,3 +260,73 @@ it('updates the component when the data changes', () => {
   cy.get('@handleUpdate').should('have.been.calledOnce');
 });
 ```
+
+---
+
+## Compare to Angular test harness
+
+Look at the tests in "item.component.spec.ts". Can you implement the test "should notify about remove button"?
+
+![Remove test](./img/remove.png)
+
++++
+
+```js
+import 'cypress-real-events/support';
+it('should notify about remove button', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo" (remove)="handleRemove($event)"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo,
+        handleRemove: cy.stub().as('handleRemove')
+      }
+    }
+  );
+  cy.contains('li.todo', 'Write code here')
+    .find('.destroy')
+    .realHover()
+    .should('be.visible')
+    .click();
+  cy.get('@handleRemove').should(
+    'be.calledOnceWithExactly',
+    todo.id
+  );
+});
+```
+
+---
+
+## Angular testing utilities included
+
+⌨️ test "yields the component and the Angular TestBed utils"
+
+```js
+cy.mount(
+  `
+    <ul class="todo-list">
+      <app-item [todo]="todo"></app-item>
+    </ul>
+  `,
+  {
+    declarations: [ItemComponent],
+    componentProperties: {
+      todo
+    }
+  }
+).then(console.log);
+```
+
++++
+
+![Yielded value from cy.mount](./img/yields.png)

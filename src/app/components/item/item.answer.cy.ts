@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+/// <reference types="cypress-real-events" />
 import { ItemComponent } from './item.component';
+import 'cypress-real-events/support';
 
 // https://on.cypress.io/component-testing/mounting-angular
 
@@ -166,4 +167,64 @@ it('updates the component when the data changes', () => {
   cy.get('.todo').should('have.class', 'completed');
   // confirm the handle stub was called once
   cy.get('@handleUpdate').should('have.been.calledOnce');
+});
+
+it('should notify about remove button', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component
+  // and pass the (remove) property a stub function
+  // with an alias "handleRemove"
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo" (remove)="handleRemove($event)"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo,
+        handleRemove: cy.stub().as('handleRemove')
+      }
+    }
+  );
+  // find the Todo destroy button and click on it
+  cy.contains('li.todo', 'Write code here')
+    .find('.destroy')
+    .realHover()
+    .should('be.visible')
+    .click();
+  // confirm the handleRemove stub was called with the right ID
+  cy.get('@handleRemove').should(
+    'be.calledOnceWithExactly',
+    todo.id
+  );
+});
+
+it('yields the component and the Angular TestBed utils', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component, pass the todo property
+  // and console.log the yielded value
+  // cy.mount(...).then(console.log)
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo
+      }
+    }
+  ).then(console.log);
 });

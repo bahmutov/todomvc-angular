@@ -90,3 +90,27 @@ it('updates the component when the data changes', () => {
   // confirm the todo element has class completed
   // confirm the handle stub was called once
 });
+
+it('should notify about remove button', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component
+  // and pass the (remove) property a stub function
+  // with an alias "handleRemove"
+  // find the Todo destroy button and click on it
+  // confirm the handleRemove stub was called with the right ID
+});
+
+it('yields the component and the Angular TestBed utils', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component, pass the todo property
+  // and console.log the yielded value
+  // cy.mount(...).then(console.log)
+});
