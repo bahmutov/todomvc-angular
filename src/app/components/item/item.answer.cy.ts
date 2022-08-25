@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ItemComponent } from './item.component';
 
 // https://on.cypress.io/component-testing/mounting-angular
@@ -79,4 +80,90 @@ it('shows an item with style', () => {
     .should('have.class', 'completed')
     .find('.toggle')
     .should('be.checked');
+});
+
+it('calls the update to complete the item', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component
+  // and pass the (update) property that will receive the update event
+  // you can create a function to pass as "update"
+  // using https://on.cypress.io/stub
+  // give the stub an alias using "cy.as" command
+  // https://on.cypress.io/as
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo" (update)="handleUpdate($event)"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo,
+        handleUpdate: cy.stub().as('handleUpdate')
+      }
+    }
+  );
+  // confirm the Todo is present and check the toggle
+  cy.contains('li.todo', 'Write code here')
+    .find('.toggle')
+    .should('not.be.checked');
+  cy.get('.toggle').check().should('be.checked');
+  // get the update stub using its alias
+  // confirm it was called once
+  // get its property "firstCall.args.0"
+  // and confirm it is the expected object
+  cy.get('@handleUpdate')
+    .should('have.been.calledOnce')
+    .its('firstCall.args.0', { timeout: 0 })
+    .should('deep.equal', {
+      id: '101',
+      completed: true
+    });
+});
+
+it('updates the component when the data changes', () => {
+  const todo = {
+    id: '101',
+    title: 'Write code here',
+    completed: false
+  };
+  // mount the component
+  // and pass the (update) property a function
+  // that sets the todo.completed to the passed value
+  // give the update stub alias "handleUpdate"
+  // https://on.cypress.io/stub with "callsFake"
+  // https://glebbahmutov.com/cypress-examples/commands/spies-stubs-clocks.html
+  cy.mount(
+    `
+      <ul class="todo-list">
+        <app-item [todo]="todo" (update)="handleUpdate($event)"></app-item>
+      </ul>
+    `,
+    {
+      declarations: [ItemComponent],
+      componentProperties: {
+        todo,
+        handleUpdate: cy
+          .stub()
+          .as('handleUpdate')
+          .callsFake(
+            ({ completed }) => (todo.completed = completed)
+          )
+      }
+    }
+  );
+  // confirm the Todo is present and check the toggle
+  cy.contains('li.todo', 'Write code here')
+    .find('.toggle')
+    .should('not.be.checked');
+  cy.get('.toggle').check().should('be.checked');
+  // confirm the todo element has class completed
+  cy.get('.todo').should('have.class', 'completed');
+  // confirm the handle stub was called once
+  cy.get('@handleUpdate').should('have.been.calledOnce');
 });

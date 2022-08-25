@@ -52,7 +52,7 @@ it('shows an item', () => {
     .should('not.be.checked');
 });
 
-it('completes the item with style', () => {
+it('calls the update to complete the item', () => {
   const todo = {
     id: '101',
     title: 'Write code here',
