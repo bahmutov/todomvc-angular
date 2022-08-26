@@ -488,7 +488,7 @@ cy.window().then(win => {
 
 +++
 
-[cypress-io/cypress-component-testing-apps](https://github.com/cypress-io/cypress-component-testing-apps)
+[cypress-io/cypress-component-testing-apps](https://github.com/cypress-io/cypress-component-testing-apps) including standalone Angular component examples.
 
 ![Cypress component testing apps repo](./img/apps-repo.png)
 

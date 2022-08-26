@@ -1,3 +1,9 @@
 {
-  "todos": []
+  "todos": [
+    {
+      "id": "6545963120",
+      "title": "my first todo",
+      "completed": false
+    }
+  ]
 }

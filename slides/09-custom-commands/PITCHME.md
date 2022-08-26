@@ -9,8 +9,8 @@
 
 +++
 
-- keep `todomvc` app running
-- open `cypress/integration/09-custom-commands/spec.js`
+- keep the app running
+- open `09-custom-commands/spec.cy.ts`
 
 ---
 
@@ -19,13 +19,15 @@
 ```js
 // name the beforeEach functions
 beforeEach(function resetData() {
-  cy.request('POST', '/reset', {
+  const api = Cypress.env('api');
+  expect(api, 'api url').to.be.a('string');
+  cy.request('POST', api + '/reset', {
     todos: []
-  })
-})
+  });
+});
 beforeEach(function visitSite() {
-  cy.visit('/')
-})
+  cy.visit('/');
+});
 ```
 
 Note:
@@ -33,58 +35,48 @@ Before each test we need to reset the server data and visit the page. The data c
 
 ---
 
-### Todo: move them into `cypress/support/index.js`
+### Todo: move them into `cypress/support/e2e.ts`
 
 Now these `beforeEach` hooks will be loaded _before every_ test in every spec. The test runner loads the spec files like this:
 
 ```html
-<script src="cypress/support/index.js"></script>
-<script src="cypress/integration/09-custom-commands/spec.js"></script>
+<script src="cypress/support/e2e.ts"></script>
+<script src="cypress/e2e/09-custom-commands/spec.cy.ts"></script>
 ```
 
-Note:
-Is this a good solution?
+🙋 Is this a good solution?
 
 +++
 
-### Todo: move them into `cypress/support/hooks.js`
+## Reusable functions
 
-And load from the spec file:
-
-```js
-// automatically runs the "beforeEach" hooks
-import '../../support/hooks'
-
-it('enters 10 todos', function () {
-  ...
-})
-```
-
-Note:
-A better solution, because only the spec file that needs these hooks can load them.
-
-+++
-
-### Todo: export the `resetData` and `visitSite`
+⌨️ Todo: export the `resetData` and `visitSite` from `utils.ts`
 
 ```js
-// cypress/support/hooks.js
-// each function registers the "beforeEach" hooks
+// 09-custom-commands.ts
 export function resetData () { ... }
 export function visitSite () { ... }
 ```
 
-⌨️ and update the `spec.js`
++++
+
+⌨️ and update the `spec.cy.ts`
 
 ```js
-import { resetData, visitSite } from '...'
-resetData()
-visitSite()
+import { resetData, visitSite } from './utils';
+beforeEach(resetData);
+beforeEach(visitSite);
+
+// or call them from the beforeEach hook
+beforeEach(() => {
+  resetData();
+  visitSite();
+});
 ```
 
 ---
 
-## My opinion
+## My opinion 🤦🏻
 
 > Little reusable functions are the best
 
@@ -95,18 +87,18 @@ import {
   getTodoItems,
   resetDatabase,
   visit
-} from '../../support/utils'
+} from '../../support/utils';
 it('loads the app', () => {
-  resetDatabase()
-  visit()
-  getTodoApp().should('be.visible')
-  enterTodo('first item')
-  enterTodo('second item')
-  getTodoItems().should('have.length', 2)
-})
+  resetDatabase();
+  visit();
+  getTodoApp().should('be.visible');
+  enterTodo('first item');
+  enterTodo('second item');
+  getTodoItems().should('have.length', 2);
+});
 ```
 
-Todo: look at the "cypress/support/utils.js"
+⌨️ Todo: write the function `getTodoItems`
 
 Note:
 Some functions can return `cy` instance, some don't, whatever is convenient. I also find small functions that return complex selectors very useful to keep selectors from duplication.
@@ -148,9 +140,9 @@ Let's write a custom command to create a todo
 
 ```js
 // instead of this
-cy.get('.new-todo').type('todo 0{enter}')
+cy.get('.new-todo').type('todo 0{enter}');
 // use a custom command "createTodo"
-cy.createTodo('todo 0')
+cy.createTodo('todo 0');
 ```
 
 +++
@@ -158,12 +150,12 @@ cy.createTodo('todo 0')
 ## Todo: write and use "createTodo"
 
 ```js
-Cypress.Commands.add('createTodo', (todo) => {
-  cy.get('.new-todo').type(`${todo}{enter}`)
-})
+Cypress.Commands.add('createTodo', todo => {
+  cy.get('.new-todo').type(`${todo}{enter}`);
+});
 it('creates a todo', () => {
-  cy.createTodo('my first todo')
-})
+  cy.createTodo('my first todo');
+});
 ```
 
 +++
@@ -171,39 +163,85 @@ it('creates a todo', () => {
 ## ⬆️ Make it better
 
 - have IntelliSense working for `createTodo`
-- have nicer Command Log
+- have nicer Command Log:
+
+1. Hide the individual commands inside
+2. Add DOM snapshots
+
+See the next slides 📺
 
 +++
 
-## Todo: add `createTodo` to `cy` object
+## Hide the commands inside
 
-How: [https://github.com/cypress-io/cypress-example-todomvc#cypress-intellisense](https://github.com/cypress-io/cypress-example-todomvc#cypress-intellisense)
+```js
+Cypress.Commands.add('createTodo', todo => {
+  cy.get('.new-todo', { log: false }).type(
+    `${todo}{enter}`,
+    { log: false }
+  );
+  cy.log('createTodo', todo);
+});
+```
 
 +++
 
-⌨️ in file `cypress/integration/09-custom-commands/custom-commands.d.ts`
+## DOM snapshots
+
+```js
+Cypress.Commands.add('createTodo', todo => {
+  const cmd = Cypress.log({
+    name: 'create todo',
+    message: todo,
+    consoleProps() {
+      return {
+        'Create Todo': todo
+      };
+    }
+  });
+
+  cy.get('.new-todo', { log: false })
+    .type(`${todo}{enter}`, { log: false })
+    .then($el => {
+      cmd.set({ $el }).snapshot().end();
+    });
+});
+```
+
+**Pro-tip:** you can have multiple command snapshots.
+
++++
+
+![Custom command with DOM snapshots](./img/dom-snapshots.png)
+
++++
+
+## Add the new command to the global cy type
+
+⌨️ Todo: add `createTodo` to `cy` object
+
+- see the command `cy.mount` in the file `cypress/support/component.ts`
+- or [https://github.com/cypress-io/cypress-example-todomvc#cypress-intellisense](https://github.com/cypress-io/cypress-example-todomvc#cypress-intellisense)
+
++++
+
+- add the custom command to `support/commands.ts`
+- add the type to the global `cy` in `support/component.ts`
 
 ```ts
-/// <reference types="cypress" />
-declare namespace Cypress {
-  interface Chainable<Subject> {
-    /**
-     * Creates one Todo using UI
-     * @example
-     * cy.createTodo('new item')
-     */
-    createTodo(todo: string): Chainable<any>
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      mount: typeof mount;
+      createTodo: typeof createTodo;
+    }
   }
 }
 ```
 
 +++
 
-Load the new definition file in `cypress/integration/09-custom-commands/spec.js`
-
-```js
-/// <reference path="./custom-commands.d.ts" />
-```
+If all else fails, create `index.d.ts` with custom commands added to the global `Cypress.Chainable` interface.
 
 +++
 
@@ -214,81 +252,7 @@ More JSDoc examples: [https://slides.com/bahmutov/ts-without-ts](https://slides.
 Note:
 Editors other than VSCode might require work.
 
-+++
-
-⚠️ tell Cypress to ignore ".d.ts" files using `ignoreTestFiles` in cypress.json or save ".d.ts" files outside the integration folder.
-
-Note:
-Otherwise Cypress will try load ".d.ts" file as spec and without TypeScript loader will fail.
-
-+++
-
-## Better Command Log
-
-```js
-Cypress.Commands.add('createTodo', (todo) => {
-  cy.get('.new-todo', { log: false }).type(`${todo}{enter}`, { log: false })
-  cy.log('createTodo', todo)
-})
-```
-
-+++
-
-## Even better Command Log
-
-```js
-Cypress.Commands.add('createTodo', (todo) => {
-  const cmd = Cypress.log({
-    name: 'create todo',
-    message: todo,
-    consoleProps() {
-      return {
-        'Create Todo': todo
-      }
-    }
-  })
-  cy.get('.new-todo', { log: false }).type(`${todo}{enter}`, { log: false })
-})
-```
-
-+++
-
-![createTodo log](./img/create-todo-log.png)
-
 ---
-
-### Mark command completed
-
-```js
-cy.get('.new-todo', { log: false })
-  .type(`${todo}{enter}`, { log: false })
-  .then(($el) => {
-    cmd.set({ $el }).snapshot().end()
-  })
-```
-
-**Pro-tip:** you can have multiple command snapshots.
-
----
-
-### Show result in the console
-
-```js
-// result will get value when command ends
-let result
-const cmd = Cypress.log({
-  consoleProps() {
-    return { result }
-  }
-})
-  // custom logic then:
-  .then((value) => {
-    result = value
-    cmd.end()
-  })
-```
-
-+++
 
 ## 3rd party custom commands
 
@@ -298,116 +262,16 @@ const cmd = Cypress.log({
 - [cypress-xpath](https://github.com/cypress-io/cypress-xpath)
 - [cypress-plugin-snapshots](https://github.com/meinaart/cypress-plugin-snapshots)
 - [cypress-pipe](https://github.com/NicholasBoll/cypress-pipe)
+- [Cypress testing library](https://testing-library.com/docs/cypress-testing-library/intro/)
 
-[on.cypress.io/plugins#custom-commands](https://on.cypress.io/plugins#custom-commands)
-
----
-
-## Try `cypress-xpath`
-
-```sh
-# already done in this repo
-npm install -D cypress-xpath
-```
-
-in `cypress/support/index.js`
-
-```js
-require('cypress-xpath')
-```
-
-+++
-
-With `cypress-xpath`
-
-```js
-it('finds list items', () => {
-  cy.xpath('//ul[@class="todo-list"]//li').should('have.length', 3)
-})
-```
-
----
-
-## Custom command with retries
-
-How does `xpath` command retry the assertions that follow it?
-
-```js
-cy.xpath('...') // command
-  .should('have.length', 3) // assertions
-```
-
-+++
-
-```js
-// use cy.verifyUpcomingAssertions
-const resolveValue = () => {
-  return Cypress.Promise.try(getValue).then((value) => {
-    return cy.verifyUpcomingAssertions(value, options, {
-      onRetry: resolveValue
-    })
-  })
-}
-```
-
----
-
-## Try `cypress-pipe`
-
-Easily retry your own functions
-
-```sh
-npm home cypress-pipe
-```
-
-Advanced example: [https://www.cypress.io/blog/2019/01/22/when-can-the-test-click/](https://www.cypress.io/blog/2019/01/22/when-can-the-test-click/)
-
-+++
-
-### Todo: retry getting object's property
-
-```js
-const o = {}
-setTimeout(() => {
-  o.foo = 'bar'
-}, 1000)
-```
-
-- until it becomes defined
-- and is equal to
-
-⌨️ test "passes when object gets new property"
-
----
-
-### Try `cypress-plugin-snapshots`
-
-⚠️ install requires 3 parts: command, plugin, env config object
-
-```js
-it('creates todos', () => {
-  // add a few todos
-  cy.window().its('app.todos').toMatchSnapshot()
-})
-```
-
-+++
-
-![toMatchSnapshot](./img/to-match-snapshot.png)
-
-+++
-
-## Todo: use data snapshot
-
-- ignore "id" field, because it is dynamic
-- update snapshot if you add todo
+🎓 Cypress Plugins course [https://cypress.tips/courses/cypress-plugins](https://cypress.tips/courses/cypress-plugins)
 
 ---
 
 ## Advanced concepts
 
 - parent vs child command
-- overwriting `cy` command
+- overwriting a `cy` command
 
 [on.cypress.io/custom-commands](https://on.cypress.io/custom-commands), [https://www.cypress.io/blog/2018/12/20/element-coverage/](https://www.cypress.io/blog/2018/12/20/element-coverage/)
 
@@ -416,16 +280,15 @@ it('creates todos', () => {
 ## Example: overwrite `cy.type`
 
 ```js
-Cypress.Commands.overwrite('type', (type, $el, text, options) => {
-  // just adds element selector to the
-  // list of seen elements
-  rememberSelector($el)
+Cypress.Commands.overwrite(
+  'type',
+  (type, $el, text, options) => {
+    console.log('typing "%s"', text);
 
-  return type($el, text, options)
-})
+    return type($el, text, options);
+  }
+);
 ```
-
-[https://www.cypress.io/blog/2018/12/20/element-coverage/](https://www.cypress.io/blog/2018/12/20/element-coverage/)
 
 ---
 
@@ -440,7 +303,10 @@ Read [https://glebbahmutov.com/blog/writing-custom-cypress-command/](https://gle
 
 ## Good plugins
 
+- https://on.cypress.io/plugins
 - https://cypresstips.substack.com/p/my-favorite-cypress-plugins
 - https://cypresstips.substack.com/p/my-favorite-cypress-plugins-part
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+🎓 Cypress Plugins course [https://cypress.tips/courses/cypress-plugins](https://cypress.tips/courses/cypress-plugins)
+
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
