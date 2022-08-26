@@ -56,6 +56,8 @@ workflows:
     jobs:
       - cypress/run:
           name: Component and E2E tests
+          # we can use Docker or an executor specified in the orb
+          executor: cypress/base-16-14-2-slim
           # instead of building the app, run the component tests
           build: npx cypress run --component
           start: npm run start:all
