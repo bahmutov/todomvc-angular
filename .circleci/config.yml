@@ -37,7 +37,8 @@ jobs:
           background: true
       - run:
           name: Run Cypress E2E tests
-          command: npx cypress run
+          # for demo purposes, only run a single spec
+          command: npx cypress run --spec cypress/e2e/02-adding-items/demo.cy.ts
 workflows:
   version: 2.1
   testing:

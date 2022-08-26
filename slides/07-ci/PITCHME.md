@@ -48,6 +48,31 @@ See [https://on.cypress.io/command-line](https://on.cypress.io/command-line)
 
 ---
 
+## Continuous integration documentation
+
+- [https://on.cypress.io/continuous-integration](https://on.cypress.io/continuous-integration)
+- [https://on.cypress.io/ci](https://on.cypress.io/ci) (alias)
+
++++
+
+## On every CI:
+
+- install and cache dependencies
+- start the app and any services in the background
+- run Cypress using `npx cypress run`
+- (maybe) stop the background apps
+
+---
+
+## CircleCI
+
+1. manual step by step configuration 😓
+2. using Cypress CircleCI Orb 😌
+
+See [https://github.com/cypress-io/circleci-orb](https://github.com/cypress-io/circleci-orb)
+
++++
+
 ## Set up CircleCI
 
 - sign up for CircleCI
@@ -57,19 +82,13 @@ See [https://on.cypress.io/command-line](https://on.cypress.io/command-line)
 
 +++
 
-## Continuous integration documentation
+## Use the .circleci/config.yml
 
-- [https://on.cypress.io/continuous-integration](https://on.cypress.io/continuous-integration)
-- [https://on.cypress.io/ci](https://on.cypress.io/ci) (alias)
+![Use the existing config file](./img/use-circle-cofig.png)
 
 ---
 
-## On every CI:
-
-- install and cache dependencies
-- start the app and any services in the background
-- run Cypress using `npx cypress run`
-- (maybe) stop the background apps
+## CircleCI step-by-step config 📝
 
 +++
 
