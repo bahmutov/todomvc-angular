@@ -22,8 +22,16 @@ export class HeaderComponent {
     if (event.key !== ENTER_KEY) {
       return;
     }
-
-    this.store.dispatch(onCreate(this.title));
+    const title = this.title;
+    const addTodoDelay = 0;
+    if (addTodoDelay > 0) {
+      setTimeout(() => {
+        this.store.dispatch(onCreate(title));
+      }, addTodoDelay);
+    } else {
+      // create the todo immediately
+      this.store.dispatch(onCreate(title));
+    }
     this.title = '';
   }
 }
