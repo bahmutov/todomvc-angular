@@ -173,7 +173,7 @@ A _much simpler_ CI configuration.
 version: 2.1
 orbs:
   # import Cypress orb by specifying an exact version x.y.z
-  # or the latest version 2.x.x using "@1" syntax
+  # or the latest version 2.x.x using "@2" syntax
   # https://github.com/cypress-io/circleci-orb
   cypress: cypress-io/cypress@2
 workflows:
@@ -183,26 +183,41 @@ workflows:
       # "run" is the name of the job defined in Cypress orb
       # runs all E2E tests by default
       - cypress/run:
+          # we can use Docker or an executor specified in the orb
+          executor: cypress/base-16-14-2-slim
+          # instead of building the app, run the component tests
+          build: npx cypress run --component
           start: npm run start:all
+          wait-on: 'http-get://localhost:9100'
 ```
 
 See [https://github.com/cypress-io/circleci-orb](https://github.com/cypress-io/circleci-orb)
 
 +++
 
-## Todo
+## Run E2E and component tests 🧪
 
-Look how tests are run in [.circleci/config.yml](https://github.com/bahmutov/cypress-workshop-basics/blob/main/.circleci/config.yml) using [cypress-io/circleci-orb](https://github.com/cypress-io/circleci-orb).
+```yml
+- cypress/run:
+    component: true
+# or use the build step instead
+- cypress/run:
+    build: npx cypress run --component
+```
+
++++
+
+![CircleCI run](./img/circle-run.png)
 
 ---
 
-## Store test artifacts
+## Store the test artifacts
 
 ```yaml
 version: 2.1
 orbs:
   # https://github.com/cypress-io/circleci-orb
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@2
 workflows:
   build:
     jobs:
@@ -219,7 +234,7 @@ workflows:
 version: 2.1
 orbs:
   # https://github.com/cypress-io/circleci-orb
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@2
 workflows:
   build:
     jobs:
@@ -239,7 +254,7 @@ workflows:
 version: 2.1
 orbs:
   # https://github.com/cypress-io/circleci-orb
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@2
 workflows:
   build:
     jobs:
@@ -269,6 +284,7 @@ Never struggle with CI config 👍
 - cross-platform CI built on top of Azure CI + MacStadium
 - Linux, Windows, and Mac
 - Official [cypress-io/github-action](https://github.com/cypress-io/github-action)
+- v4 supports Component testing
 
 +++
 
@@ -277,15 +293,71 @@ jobs:
   cypress-run:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # https://github.com/cypress-io/github-action
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v4
         with:
-          start: npm start
-          wait-on: 'http://localhost:3000'
+          start: 'npm run start:all'
+          wait-on: 'http://localhost:9100'
 ```
 
-Check [.github/workflows/ci.yml](https://github.com/bahmutov/cypress-workshop-basics/blob/main/.github/workflows/ci.yml)
+Check the [.github/workflows/ci.yml](https://github.com/bahmutov/todomvc-angular/blob/main/.github/workflows/ci.yml) file
+
++++
+
+## Run component tests + E2E 🧪
+
+```yaml
+name: ci
+on: push
+jobs:
+  test-answers:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      # https://github.com/cypress-io/github-action
+      - name: Test component tests 🧩
+        uses: cypress-io/github-action@v4
+        with:
+          component: true
+
+      # https://github.com/cypress-io/github-action
+      - name: Test E2E answers 🤔
+        uses: cypress-io/github-action@v4
+        with:
+          # Cypress dependencies were installed in the previous test step
+          install: false
+          start: 'npm run start:all'
+          wait-on: 'http://localhost:9100'
+```
+
++++
+
+## GitHub Actions run
+
+![GH Actions run](./img/actions-run.png)
+
++++
+
+## Store test artifacts
+
+Add after the test run
+
+```yml
+- uses: actions/upload-artifact@v3
+  if: failure()
+  with:
+    name: cypress-screenshots
+    path: cypress/screenshots
+# Test run video was always captured, so this action uses "always()" condition
+- uses: actions/upload-artifact@v3
+  if: always()
+  with:
+    name: cypress-videos
+    path: cypress/videos
+```
 
 ---
 
