@@ -8,52 +8,43 @@
 - CircleCI Orb example
 - GitHub Actions example
 - GitHub reusable workflows
-- How to run tests faster
+- How to run your tests faster 🏎
 
 ---
 
 ## Poll: what CI do you use?
 
 - ❤️ GitHub Actions
-- 👏 CircleCI
-- 👍 Jenkins
-- 🎉 Something else
+- 👏 CircleCI <!-- .element: class="fragment" -->
+- 👍 Jenkins <!-- .element: class="fragment" -->
+- 🎉 Something else <!-- .element: class="fragment" -->
 
 ---
 
 ## Todo if possible
 
 - sign up for free account on CircleCI
-- use your fork of https://github.com/bahmutov/testing-app-example
+- use your fork of https://github.com/bahmutov/todomvc-angular
 
 Or make your copy of it using
 
 ```
-$ npx degit https://github.com/bahmutov/testing-app-example test-app-my-example
-$ cd test-app-my-example
+$ npx degit https://github.com/bahmutov/todomvc-angular my-example
+$ cd my-example
 $ npm i
-$ npm start
-# create GitHub repo and push "test-app-my-example"
+$ npm run start:all
+# create GitHub repo and push "my-example"
 ```
 
 ---
 
 ## Open vs Run
 
-- run the specs in the interactive mode with `cypress open`
-- run the specs in the headless mode with `cypress run`
+- work in the interactive mode with `cypress open`
+- run the e2e specs in the headless mode with `cypress run`
+- run the component specs in the headless mode with `cypress run --component`
 
 See [https://on.cypress.io/command-line](https://on.cypress.io/command-line)
-
-+++
-
-## Set up Cypress
-
-```
-$ npm i -D cypress
-$ npx @bahmutov/cly init -b
-# add a test or two
-```
 
 ---
 
@@ -76,9 +67,9 @@ $ npx @bahmutov/cly init -b
 ## On every CI:
 
 - install and cache dependencies
-- start `todomvc` server in the background
+- start the app and any services in the background
 - run Cypress using `npx cypress run`
-- (maybe) stop the `todomvc` server
+- (maybe) stop the background apps
 
 +++
 
@@ -87,38 +78,45 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cypress/base:12
+      - image: cypress/base:16.14.2
     working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
           keys:
-            - dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - dependencies-
+            - dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
           # https://docs.npmjs.com/cli/ci
           command: npm ci
+      - run:
+          name: Check Cypress
+          command: npx cypress verify
       - save_cache:
           paths:
             - ~/.npm
             - ~/.cache
-          key: dependencies-{{ checksum "package.json" }}
+          key: dependencies-{{ checksum "package-lock.json" }}
       # continued: start the app and run the tests
 ```
 
 +++
 
 ```yaml
+- run:
+    name: Run Cypress component tests
+    command: npx cypress run --component
 # two commands: start server, run tests
 - run:
-    name: Start TodoMVC server
-    command: npm start
-    working_directory: todomvc
+    name: Start API
+    command: npm run api:start
     background: true
 - run:
-    name: Run Cypress tests
+    name: Start web application
+    command: npm start
+    background: true
+- run:
+    name: Run Cypress E2E tests
     command: npx cypress run
 ```
 
@@ -129,15 +127,18 @@ Alternative: use [start-server-and-test](https://github.com/bahmutov/start-serve
 ```yaml
 - run:
   name: Start and test
-  command: npm run ci
+  # starts the services
+  command: npm test
 ```
 
 ```json
 {
   "scripts": {
-    "start": "npm start --prefix todomvc -- --quiet",
-    "test": "cypress run",
-    "ci": "start-test 3000"
+    "start": "ng serve",
+    "start:all": "run-p start api:start",
+    "cy:run": "cypress run",
+    "dev": "start-test start:all 9100 e2e",
+    "test": "start-test start:all 9100 cy:run"
   }
 }
 ```
