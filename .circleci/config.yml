@@ -54,18 +54,10 @@ workflows:
       - e2e-tests
   orb-testing:
     jobs:
-      - cypress/install:
-          build: npm run build
       - cypress/run:
-          requires:
-            - cypress/install
-          name: component tests
-          component: true
-          no-workspace: true
-      - cypress/run:
-          requires:
-            - cypress/install
-          name: E2E tests
+          name: Component and E2E tests
+          # instead of building the app, run the component tests
+          build: npx cypress run --component
           start: npm run start:all
           wait-on: 'http-get://localhost:9100'
           spec: cypress/e2e/02-adding-items/demo.cy.ts
