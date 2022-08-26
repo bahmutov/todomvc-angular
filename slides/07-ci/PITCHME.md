@@ -181,8 +181,9 @@ workflows:
     jobs:
       # "cypress" is the name of the imported orb
       # "run" is the name of the job defined in Cypress orb
+      # runs all E2E tests by default
       - cypress/run:
-          start: npm start
+          start: npm run start:all
 ```
 
 See [https://github.com/cypress-io/circleci-orb](https://github.com/cypress-io/circleci-orb)

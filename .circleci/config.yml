@@ -30,6 +30,9 @@ jobs:
             - ~/.cache
           key: dependencies-{{ checksum "package-lock.json" }}
       - run:
+          name: Build the app once
+          command: npm run build
+      - run:
           name: Run Cypress component tests
           command: npx cypress run --component
       - run:
@@ -51,7 +54,8 @@ workflows:
       - e2e-tests
   orb-testing:
     jobs:
-      - cypress/install
+      - cypress/install:
+          build: npm run build
       - cypress/run:
           requires:
             - cypress/install
