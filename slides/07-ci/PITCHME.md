@@ -318,7 +318,7 @@ jobs:
         uses: actions/checkout@v3
 
       # https://github.com/cypress-io/github-action
-      - name: Test component tests 🧩
+      - name: Test components 🧩
         uses: cypress-io/github-action@v4
         with:
           component: true
@@ -408,6 +408,8 @@ $ npx cypress run --spec $specs
 
 See [find-cypress-specs](https://github.com/bahmutov/find-cypress-specs)
 
+## 🐞 does not support cypress.config.ts yet
+
 +++
 
 2. Run tests by tag
@@ -452,4 +454,4 @@ Find the CI you use on [https://on.cypress.io/continuous-integration](https://on
 - my [GitHub Actions blog posts](https://glebbahmutov.com/blog/tags/github/)
 - my [CircleCI blog posts](https://glebbahmutov.com/blog/tags/circle/)
 
-➡️ Pick the [next section](https://github.com/bahmutov/cypress-workshop-basics#contents)
+➡️ Pick the [next section](https://github.com/bahmutov/todomvc-angular#contents)
