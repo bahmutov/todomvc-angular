@@ -1,4 +1,9 @@
 version: 2.1
+orbs:
+  # import Cypress orb by specifying an exact version x.y.z
+  # or the latest version 2.x.x using "@1" syntax
+  # https://github.com/cypress-io/circleci-orb
+  cypress: cypress-io/cypress@2
 executors:
   ci-image:
     docker:
@@ -44,3 +49,20 @@ workflows:
   testing:
     jobs:
       - e2e-tests
+  orb-testing:
+    jobs:
+      - cypress/install
+      - cypress/run:
+          requires:
+            - cypress/install
+          name: component tests
+          component: true
+          no-workspace: true
+      - cypress/run:
+          requires:
+            - cypress/install
+          name: E2E tests
+          start: npm run start:all
+          wait-on: 'http-get://localhost:9100'
+          spec: cypress/e2e/02-adding-items/demo.cy.ts
+          no-workspace: true

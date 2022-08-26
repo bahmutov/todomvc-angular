@@ -153,6 +153,7 @@ Alternative: use [start-server-and-test](https://github.com/bahmutov/start-serve
 ```json
 {
   "scripts": {
+    "api:start": "...",
     "start": "ng serve",
     "start:all": "run-p start api:start",
     "cy:run": "cypress run",
@@ -172,9 +173,9 @@ A _much simpler_ CI configuration.
 version: 2.1
 orbs:
   # import Cypress orb by specifying an exact version x.y.z
-  # or the latest version 1.x.x using "@1" syntax
+  # or the latest version 2.x.x using "@1" syntax
   # https://github.com/cypress-io/circleci-orb
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@2
 workflows:
   build:
     jobs:
