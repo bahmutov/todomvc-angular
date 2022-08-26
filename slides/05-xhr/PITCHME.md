@@ -333,6 +333,10 @@ cy.wait('@postTodo')
 
 - [cy-spok plugin](https://github.com/bahmutov/cy-spok) and [glebbahmutov.com/blog/network-requests-with-cypress/](https://glebbahmutov.com/blog/network-requests-with-cypress/)
 
++++
+
+![cy-spok in action](./img/spok.png)
+
 ---
 
 ### Let's test an edge data case

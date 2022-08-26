@@ -5,6 +5,8 @@
 // see https://on.cypress.io/intercept
 // and https://cypress.tips/courses/network-testing
 
+import spok from 'cy-spok';
+
 // @ts-ignore
 import threeTodos from '../../fixtures/three-items.json';
 
@@ -500,6 +502,37 @@ describe('refactor example', () => {
 
   // Bonus: want even better assertions? use cy-spok
   // https://github.com/bahmutov/cy-spok
+  it('confirms the item using cy-spok', () => {
+    cy.intercept('GET', '/todos', []).as('todos');
+    cy.visit('/');
+    cy.intercept('POST', '/todos').as('postTodo');
+    const title = 'new todo';
+    const completed = false;
+    cy.get('.new-todo').type(title + '{enter}');
+    cy.wait('@postTodo')
+      .its('response', { timeout: 0 })
+      .should(
+        spok({
+          statusCode: 201,
+          body: {
+            id: spok.string,
+            title,
+            completed
+          }
+        })
+      )
+      .its('body.id')
+      .then(id => {
+        cy.log(`new item id: ${id}`);
+        cy.request(api + '/todos/' + id)
+          .its('body')
+          .should('deep.equal', {
+            id,
+            title,
+            completed
+          });
+      });
+  });
 });
 
 describe('test periodic loading', () => {
