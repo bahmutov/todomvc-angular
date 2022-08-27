@@ -5,6 +5,7 @@
 // see https://on.cypress.io/intercept
 // and https://cypress.tips/courses/network-testing
 
+// https://github.com/bahmutov/cy-spok
 import spok from 'cy-spok';
 
 // @ts-ignore

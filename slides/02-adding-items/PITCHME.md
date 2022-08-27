@@ -352,9 +352,9 @@ describe('Feature A', () => {
 });
 ```
 
-+++
+---
 
-## Support file
+## The support file(s)
 
 Support file is included before each spec file. **Note** actual files are loaded using XHRs
 
@@ -363,7 +363,43 @@ Support file is included before each spec file. **Note** actual files are loaded
 <script src="cypress/e2e/spec.cy.ts"></script>
 ```
 
-Tip: Want to reset the data and visit the site before each test? Put the commands into "beforeEach" hook inside the support file. <!-- .element: class="fragment" -->
+💡: Want to reset the data and visit the site before each test? Put the commands into "beforeEach" hook inside the support file. <!-- .element: class="fragment" -->
+
+💡💡: There are separate support files for E2E and component tests. <!-- .element: class="fragment" -->
+
+---
+
+## 🕵🏻 Spy on the browser API
+
+When application adds a todo, it prints a message using `console.log`. Can you spy on the `console.log` method to confirm it?
+
+⌨️ implement the test "logs a message when adding a todo"
+
++++
+
+![Spying on the console.log](./img/spy-log.png)
+
++++
+
+```js
+it('logs a message when adding a todo', () => {
+  cy.window().then(win => {
+    cy.spy(win.console, 'log').as('log');
+  });
+  cy.get('.new-todo').type('use test spies{enter}');
+  cy.get('@log').should(
+    'have.been.calledWith',
+    'added new todo',
+    'use test spies'
+  );
+});
+```
+
+---
+
+Why `cy.window()`?
+
+![Cypress architecture and iframes](./img/cypress-iframes.png)
 
 ---
 

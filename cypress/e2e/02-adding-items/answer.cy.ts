@@ -472,8 +472,35 @@ describe.skip('bonus tests', () => {
   });
 });
 
-// what a challenge?
-// test more UI at http://todomvc.com/examples/vue/
+it('logs a message when adding a todo', () => {
+  // get the application's window object
+  // https://on.cypress.io/window
+  // and spy on the window.console object's "log" method
+  // https://on.cypress.io/spy
+  // give the spy an alias "log"
+  // https://on.cypress.io/as
+  cy.window().then(win => {
+    cy.spy(win.console, 'log').as('log');
+  });
+  // type new todo and press enter
+  cy.get('.new-todo').type('use test spies{enter}');
+  // get the "log" alias
+  // and confirm it was called with
+  // expected two arguments
+  cy.get('@log').should(
+    'have.been.calledWith',
+    'added new todo',
+    'use test spies'
+  );
+  // not sure about about an argument?
+  // Use Sinon matchers
+  // https://glebbahmutov.com/cypress-examples/commands/spies-stubs-clocks.html
+  cy.get('@log').should(
+    'have.been.calledWith',
+    Cypress.sinon.match.string,
+    'use test spies'
+  );
+});
 
 // avoid name clashes by telling TS that all locally declared vars are indeed local
 export {};

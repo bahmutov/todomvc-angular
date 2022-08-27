@@ -46,9 +46,15 @@ export const createTodoReducer = (
         headers: {
           'Content-Type': 'application/json'
         }
-      }).catch(e => {
-        console.error(e);
-      });
+      })
+        .then(r => {
+          if (r.ok) {
+            console.log('added new todo', title);
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
 
       return [...state, newTodo];
     }),

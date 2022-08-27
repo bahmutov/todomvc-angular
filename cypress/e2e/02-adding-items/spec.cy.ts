@@ -247,5 +247,20 @@ it('checks the meta tags in the head element', () => {
   // confirm the meta tag description includes the expected text "workshop"
 });
 
-// what a challenge?
-// test more UI at http://todomvc.com/examples/vue/
+it('logs a message when adding a todo', () => {
+  // get the application's window object
+  // https://on.cypress.io/window
+  // and spy on the window.console object's "log" method
+  // https://on.cypress.io/spy
+  // give the spy an alias "log"
+  // https://on.cypress.io/as
+  //
+  // type new todo and press enter
+  // get the "log" alias
+  // and confirm it was called with
+  // expected two arguments
+  //
+  // not sure about about an argument?
+  // Use Sinon matchers
+  // https://glebbahmutov.com/cypress-examples/commands/spies-stubs-clocks.html
+});

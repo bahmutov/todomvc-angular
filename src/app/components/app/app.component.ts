@@ -27,13 +27,17 @@ export class AppComponent implements OnInit {
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
     const delay = parseFloat(params.get('delay') || '0');
-    console.log('load delay is %d', delay);
 
     const loadTodos = () => {
       this.loading = true;
 
       TodoRestService.loadTodos()
         .then(todos => {
+          console.log(
+            `loaded ${todos.length} ${
+              todos.length === 1 ? 'todo' : 'todos'
+            }`
+          );
           this.loaded = true;
           this.store.dispatch(onLoad(todos));
 
