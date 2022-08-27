@@ -1,6 +1,6 @@
-//
+// ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 // note, we are not resetting the server before each test
-//
+// ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
 // see https://on.cypress.io/intercept
 // and https://cypress.tips/courses/network-testing
@@ -533,6 +533,44 @@ describe('refactor example', () => {
           });
       });
   });
+});
+
+it('controls the item ID generator', () => {
+  // stub the initial GET /todos load
+  // https://on.cypress.io/intercept
+  // give it an alias "todos"
+  cy.intercept('GET', '/todos', []).as('todos');
+  // visit the page and wait for the todos intercept
+  cy.visit('/');
+  cy.wait('@todos');
+  // stub the "POST /todos" network call
+  // and give it an alias "postTodo"
+  cy.intercept('POST', '/todos', {}).as('postTodo');
+  // get the application's window object
+  // https://on.cypress.io/window
+  cy.window().then(win => {
+    // stub the win.Math.random() method
+    // so it always returns number 0.123
+    // https://on.cypress.io/stub
+    // give the stub an alias "random"
+    // Tip: all stubs and spies are reset before each test
+    cy.stub(win.Math, 'random').as('random').returns(0.123);
+  });
+  // type the new todo into the UI
+  cy.get('.new-todo').type('control randomness{enter}');
+  // wait for the "postTodo" call to happen
+  // and confirm its full request body object
+  cy.wait('@postTodo')
+    .its('request.body')
+    .should('deep.equal', {
+      id: '123',
+      title: 'control randomness',
+      completed: false
+    });
+  // confirm it was no coincidence, and our stub was used
+  // by getting the stub by its alias "random"
+  // and checking that it was called once
+  cy.get('@random').should('have.been.calledOnce');
 });
 
 describe('test periodic loading', () => {

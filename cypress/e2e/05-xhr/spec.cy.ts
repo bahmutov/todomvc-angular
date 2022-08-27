@@ -300,6 +300,33 @@ describe('refactor example', () => {
   // https://github.com/bahmutov/cy-spok
 });
 
+it('controls the item ID generator', () => {
+  // stub the initial GET /todos load
+  // https://on.cypress.io/intercept
+  // give it an alias "todos"
+  //
+  // visit the page and wait for the todos intercept
+  //
+  // stub the "POST /todos" network call
+  // and give it an alias "postTodo"
+  //
+  // get the application's window object
+  // https://on.cypress.io/window
+  // stub the win.Math.random() method
+  // so it always returns number 0.123
+  // https://on.cypress.io/stub
+  // give the stub an alias "random"
+  // Tip: all stubs and spies are reset before each test
+  //
+  // type the new todo into the UI
+  // wait for the "postTodo" call to happen
+  // and confirm its full request body object
+  //
+  // confirm it was no coincidence, and our stub was used
+  // by getting the stub by its alias "random"
+  // and checking that it was called once
+});
+
 describe('visit non-html page', () => {
   // before each test, create todos from the fixture data
   // the REST API serves each todo at /todos/:id

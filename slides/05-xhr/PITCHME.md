@@ -339,6 +339,37 @@ cy.wait('@postTodo')
 
 ---
 
+## Non-determinism
+
+- random data in tests makes it very hard
+- UUIDs, dates, etc
+- Cypress includes network and method stubbing using [http://sinonjs.org/](http://sinonjs.org/)
+- [https://on.cypress.io/network-requests](https://on.cypress.io/network-requests)
+- [https://on.cypress.io/stubs-spies-and-clocks](https://on.cypress.io/stubs-spies-and-clocks)
+
++++
+
+## Questions
+
+- how does a new item get its id?
+- can you override random id generator from DevTools? <!-- .element: class="fragment" -->
+
+---
+
+## Stub application's random generator
+
+- test "controls the item ID generator" in `05-xhr/spec.cy.js`
+- get the application's context using `cy.window`
+- get application's `window.Math` object
+- can you stub application's random generator?
+  - **hint** use `cy.stub`
+
++++
+
+![Stub random ID generator](./img/stub-random.png)
+
+---
+
 ### Let's test an edge data case
 
 User cannot enter blank titles. What if our database has old data records with blank titles which it returns on load? Does the application show them? Does it crash? **Todo:** write the test `handles todos with blank title`
