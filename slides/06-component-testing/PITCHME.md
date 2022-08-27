@@ -437,9 +437,56 @@ it('shows the items', { viewportHeight: 700 }, () => {
 });
 ```
 
+---
+
+## 🕵🏻 Spy on the browser API
+
+When app component adds a todo, it prints a message using `console.log`. Can you spy on the `console.log` method to confirm it?
+
+⌨️ implement the test "logs a message when adding a todo"
+
 +++
 
+![Spying on the console.log in the component test](./img/spy-component-window.png)
+
++++
+
+```js
+it('logs a message when adding a todo', () => {
+  const store = createStore({
+    todos: [],
+    filter: FILTERS.all
+  });
+
+  cy.intercept('GET', '/todos', []).as('todos');
+  cy.intercept('POST', '/todos', {});
+
+  cy.mount(AppComponent, {
+    declarations: [
+      HeaderComponent,
+      ListComponent,
+      ItemComponent,
+      CopyRightComponent,
+      FooterComponent
+    ],
+    imports: [StoreModule.forRoot(store)]
+  });
+
+  cy.spy(window.console, 'log').as('log');
+  cy.get('.new-todo').type('use test spies{enter}');
+  cy.get('@log').should(
+    'have.been.calledWith',
+    'added new todo',
+    'use test spies'
+  );
+});
+```
+
+---
+
 ## Control the ~~destiny~~ randomness
+
+Go back to the test "shows the items". We are adding a new item, but confirming only the known properties of the "POST /todos" network call.
 
 ```js
 cy.wait('@new-todo')
@@ -464,7 +511,7 @@ function randomId() {
 }
 ```
 
-We can control the `Math.random` method from the test "controls the new item ID"
+Todo: control the `Math.random` method from the test "controls the new item ID"
 
 ```js
 cy.stub(window.Math, 'random').returns(0.123);

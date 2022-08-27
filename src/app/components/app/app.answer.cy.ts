@@ -52,6 +52,51 @@ it('shows the items', { viewportHeight: 700 }, () => {
     });
 });
 
+it('logs a message when adding a todo', () => {
+  // create a store for testing
+  // using a list of todos from a fixture file
+  const store = createStore({
+    todos: [],
+    filter: FILTERS.all
+  });
+
+  // intercept GET /todos with []
+  cy.intercept('GET', '/todos', []).as('todos');
+  // intercept POST /todos with {}
+  cy.intercept('POST', '/todos', {});
+
+  cy.mount(AppComponent, {
+    declarations: [
+      HeaderComponent,
+      ListComponent,
+      ItemComponent,
+      CopyRightComponent,
+      FooterComponent
+    ],
+    imports: [StoreModule.forRoot(store)]
+  });
+
+  // spy on the "window.console.log" method
+  // https://on.cypress.io/spy
+  // and give it an alias "log"
+  cy.spy(window.console, 'log').as('log');
+  // alternative: match the E2E syntax
+  // for getting the window object
+  // cy.window().then(win => {
+  //   cy.spy(win.console, 'log').as('log');
+  // });
+  // type new todo and press enter
+  cy.get('.new-todo').type('use test spies{enter}');
+  // get the "log" alias
+  // and confirm it was called with
+  // expected two arguments
+  cy.get('@log').should(
+    'have.been.calledWith',
+    'added new todo',
+    'use test spies'
+  );
+});
+
 it(
   'controls the new item ID',
   { viewportHeight: 700 },

@@ -30,11 +30,49 @@ it('shows the items', { viewportHeight: 700 }, () => {
     imports: [StoreModule.forRoot(store)]
   });
   // the app makes a call to load the todo items
+  //
   // stub the "POST /todos" network call
   // and give it the alias "new-todo"
   // enter new todo "clean up" using the UI
   // confirm the network call "new-todo"
   // has happened with the expected parameters
+});
+
+it('logs a message when adding a todo', () => {
+  // create a store for testing
+  // using a list of todos from a fixture file
+  const store = createStore({
+    todos: [],
+    filter: FILTERS.all
+  });
+
+  // intercept GET /todos with []
+  // intercept POST /todos with {}
+
+  cy.mount(AppComponent, {
+    declarations: [
+      HeaderComponent,
+      ListComponent,
+      ItemComponent,
+      CopyRightComponent,
+      FooterComponent
+    ],
+    imports: [StoreModule.forRoot(store)]
+  });
+
+  // spy on the "window.console.log" method
+  // https://on.cypress.io/spy
+  // and give it an alias "log"
+  //
+  // alternative: match the E2E syntax
+  // for getting the window object
+  // cy.window().then(win => {
+  //   cy.spy(win.console, 'log').as('log');
+  // });
+  // type new todo and press enter
+  // get the "log" alias
+  // and confirm it was called with
+  // expected two arguments
 });
 
 it(
