@@ -106,6 +106,26 @@ it('mounts the template', () => {
 
 +++
 
+## The component can have style
+
+⌨️ Add the Item component inline style and see them in the test "mounts the template"
+
+- inline `styles` property like `styles: ['li { text-transform: uppercase; }']`
+
+[Angular Component Styles doc](https://angular.io/guide/component-styles)
+
++++
+
+## The component can have style from CSS file
+
+⌨️ Add external CSS styles file and see them in the test "mounts the template"
+
+- load the style from `item.component.css` via `styleUrls`
+
+[Angular Component Styles doc](https://angular.io/guide/component-styles)
+
++++
+
 ## Mount a template to match app CSS
 
 How does the app apply its CSS? Can you make the template HTML in the test "shows an item with style" match it?
@@ -532,6 +552,8 @@ cy.window().then(win => {
 - `cy.mount(component, props)`
 - use any Cypress commands (except `cy.visit`)
 - confirm the component works
+
+👎 Currently it is hard to stub component imports <!-- .element: class="fragment" -->
 
 +++
 

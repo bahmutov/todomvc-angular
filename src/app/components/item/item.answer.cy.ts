@@ -194,8 +194,10 @@ it('should notify about remove button', () => {
   );
   // find the Todo destroy button and click on it
   cy.contains('li.todo', 'Write code here')
-    .find('.destroy')
     .realHover()
+    // to make the test clear
+    .wait(1000)
+    .find('.destroy')
     .should('be.visible')
     .click();
   // confirm the handleRemove stub was called with the right ID
