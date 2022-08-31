@@ -1,4 +1,6 @@
-/// <reference types="cypress" />
+// https://github.com/bahmutov/cypress-if
+import 'cypress-if';
+
 /**
  * Adds a todo item
  * @param {string} text
@@ -6,6 +8,41 @@
 const addItem = text => {
   cy.get('.new-todo').type(`${text}{enter}`);
 };
+
+describe('ANTI-PATTERN: reset state using UI and cypress-if', () => {
+  it('adds 2 items', () => {
+    cy.visit('/');
+    // make sure the application has finished loading
+    cy.get('#app').should('have.class', 'loaded');
+    cy.get('li.todo .destroy', { timeout: 0 })
+      .if()
+      .click({ force: true, multiple: true })
+      .else()
+      .log('**nothing to delete**');
+
+    cy.get('li.todo').should('not.exist');
+    addItem('first item');
+    addItem('second item');
+    cy.get('li.todo').should('have.length', 2);
+  });
+
+  it('completes all and clears adds 2 items', () => {
+    cy.visit('/');
+    // make sure the application has finished loading
+    cy.get('#app').should('have.class', 'loaded');
+    cy.get('[htmlfor="toggle-all"]', { timeout: 0 })
+      .if('visible')
+      .click()
+      .get('.clear-completed')
+      .click()
+      .else()
+      .log('**nothing to complete**');
+    cy.get('li.todo').should('not.exist');
+    addItem('first item');
+    addItem('second item');
+    cy.get('li.todo').should('have.length', 2);
+  });
+});
 
 describe('ANTI-PATTERN: reset state through the UI', () => {
   beforeEach(() => {
@@ -54,7 +91,9 @@ describe('ANTI-PATTERN: reset state through the UI', () => {
     // this test adds an item then cleans up after itself
     // leaving no items for other test to clean up
     addItem('only item');
-    cy.contains('.todo', 'only item').find('.destroy').click({ force: true });
+    cy.contains('.todo', 'only item')
+      .find('.destroy')
+      .click({ force: true });
   });
 });
 
@@ -164,16 +203,21 @@ describe('create todos using API', () => {
     const numTodos = Math.floor(Math.random() * 10) + 1;
     cy.log(`Creating **${numTodos}** todos`);
     // form the todos array with random titles
-    const todos = Array.from({ length: numTodos }).map((o, k) => ({
-      title: `todo ${k}`,
-      completed: false,
-      id: `id-${k}`
-    }));
+    const todos = Array.from({ length: numTodos }).map(
+      (o, k) => ({
+        title: `todo ${k}`,
+        completed: false,
+        id: `id-${k}`
+      })
+    );
     // tip: you can use console.table to print an array of objects
     console.table(todos);
     // call cy.request to post each TODO item
     todos.forEach(todo => {
-      cy.request('POST', api + '/todos', todo);
+      cy.request('POST', api + '/todos', todo)
+        // our little backend server might struggle to create
+        // items very quickly
+        .wait(100);
     });
     // visit the page and check the displayed number of todos
     cy.visit('/');
@@ -204,9 +248,19 @@ describe('create todos using API', () => {
     cy.fixture('two-items.json', null)
       .invoke({ log: false }, 'toString')
       // replace the first item's title with some other text
-      .invoke({ log: false }, 'replace', 'first item from fixture', 'First!')
+      .invoke(
+        { log: false },
+        'replace',
+        'first item from fixture',
+        'First!'
+      )
       // replace the second item's title with some other text
-      .invoke({ log: false }, 'replace', 'second item from fixture', 'Second!')
+      .invoke(
+        { log: false },
+        'replace',
+        'second item from fixture',
+        'Second!'
+      )
       // convert the string to JSON and reset the data on the server
       .then(JSON.parse)
       .then(todos => {
@@ -214,7 +268,10 @@ describe('create todos using API', () => {
         cy.task('resetData', { todos }, { log: false });
         cy.visit('/');
         // verify the page
-        cy.get('li.todo').should('have.length', todos.length);
+        cy.get('li.todo').should(
+          'have.length',
+          todos.length
+        );
         todos.forEach(todo => {
           cy.contains('li.todo', todo.title);
         });
@@ -294,35 +351,59 @@ describe.skip('routing', () => {
   it('shows todos based on selected filter', () => {
     cy.visit('/');
     // by default, all todos are shown
-    cy.get('[data-cy="filter-all"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-all"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 3);
 
     cy.log('**active todos**');
-    cy.contains('[data-cy="filter-active"]', 'Active').click();
+    cy.contains(
+      '[data-cy="filter-active"]',
+      'Active'
+    ).click();
     cy.location('hash').should('eq', '#/active');
-    cy.get('[data-cy="filter-active"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-active"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 2);
     cy.get('.todo.completed').should('have.length', 0);
 
     cy.log('**completed todos**');
-    cy.contains('[data-cy="filter-completed"]', 'Completed').click();
+    cy.contains(
+      '[data-cy="filter-completed"]',
+      'Completed'
+    ).click();
     cy.location('hash').should('eq', '#/completed');
-    cy.get('[data-cy="filter-completed"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-completed"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 1);
-    cy.get('.todo:not(.completed)').should('have.length', 0);
+    cy.get('.todo:not(.completed)').should(
+      'have.length',
+      0
+    );
 
     cy.log('**all todos again**');
     cy.contains('[data-cy="filter-all"]', 'All').click();
     cy.location('hash').should('eq', '#/all');
     cy.get('.todo').should('have.length', 3);
-    cy.get('.todo:not(.completed)').should('have.length', 2);
+    cy.get('.todo:not(.completed)').should(
+      'have.length',
+      2
+    );
     cy.get('.todo.completed').should('have.length', 1);
   });
 
   it('navigates to /active', () => {
     // visit the active route and make sure it loads
     cy.visit('/#/active');
-    cy.get('[data-cy="filter-active"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-active"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 2);
     cy.get('.todo.completed').should('have.length', 0);
   });
@@ -330,7 +411,10 @@ describe.skip('routing', () => {
   it('navigates to /completed', () => {
     // visit the completed route and make sure it loads
     cy.visit('/#/completed');
-    cy.get('[data-cy="filter-completed"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-completed"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 1);
     cy.get('.todo.completed').should('have.length', 1);
   });
@@ -338,7 +422,10 @@ describe.skip('routing', () => {
   it('navigates to /all', () => {
     // visit the all route and make sure it loads
     cy.visit('/#/all');
-    cy.get('[data-cy="filter-all"]').should('have.class', 'selected');
+    cy.get('[data-cy="filter-all"]').should(
+      'have.class',
+      'selected'
+    );
     cy.get('.todo').should('have.length', 3);
   });
 });

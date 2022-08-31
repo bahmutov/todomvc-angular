@@ -19,6 +19,7 @@ const areAllCompleted = state =>
 
 const API_URL = 'http://localhost:3000';
 const TODOS_URL = `${API_URL}/todos`;
+const RESET_URL = `${API_URL}/reset`;
 
 function randomId() {
   return Math.random().toString().substr(2, 10);
@@ -78,6 +79,26 @@ export const createTodoReducer = (
       }));
     }),
     on(onClearCompleted, (state: TodoInterface[]) => {
-      return selectNotCompleted(state);
+      const completed = selectNotCompleted(state);
+      if (areAllCompleted(state)) {
+        fetch(RESET_URL, {
+          method: 'POST',
+          body: JSON.stringify({ todos: [] }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(r => {
+            if (r.ok) {
+              console.log(
+                'completed all todos and removed them'
+              );
+            }
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
+      return completed;
     })
   );
